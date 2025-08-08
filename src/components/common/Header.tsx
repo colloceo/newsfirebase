@@ -1,8 +1,8 @@
 import Link from 'next/link';
-import { Newspaper, Home, Info, Phone, Search, Menu } from 'lucide-react';
+import { Newspaper, Search, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -46,6 +46,7 @@ export default function Header() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="left">
+                <SheetTitle className="sr-only">Menu</SheetTitle>
                 <div className="flex flex-col gap-4 p-4">
                   <Link href="/" className="flex items-center gap-2 text-primary mb-4">
                      <Newspaper className="h-8 w-8" />
