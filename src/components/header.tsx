@@ -10,8 +10,8 @@ export default function Header() {
           <Image
             src="https://iili.io/FsGM311.png"
             alt="News254 Logo"
-            width={90}
-            height={24}
+            width={28}
+            height={28}
             className="object-contain"
             priority
           />

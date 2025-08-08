@@ -18,7 +18,7 @@ const navLinks = [
 
 export default function Header() {
   return (
-    <header className="bg-card shadow-md sticky top-0 z-50">
+    <header className="bg-card shadow-sm sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center py-3">
           <Link href="/" className="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity">
@@ -30,6 +30,10 @@ export default function Header() {
               className="object-contain"
               priority
             />
+             <div className="hidden sm:block">
+              <span className="text-xl font-bold text-gray-800">News254</span>
+              <p className="text-xs text-gray-500">Kenya's News Hub</p>
+            </div>
           </Link>
           <div className="hidden lg:flex items-center gap-4">
             <nav className="flex items-center gap-1">
@@ -68,6 +72,10 @@ export default function Header() {
                         height={28}
                         className="object-contain"
                       />
+                      <div>
+                        <span className="text-xl font-bold text-gray-800">News254</span>
+                        <p className="text-xs text-gray-500">Kenya's News Hub</p>
+                      </div>
                   </Link>
                   <div className="mt-4">
                     <SearchForm />
