@@ -9,12 +9,54 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Facebook, Twitter, Linkedin, Link as LinkIcon } from 'lucide-react';
+import type { Metadata, ResolvingMetadata } from 'next';
+import { slugify } from '@/lib/utils';
 
-// This is a placeholder for a real slug-to-id mapping
+// This function generates the slugs for all articles
+export async function generateStaticParams() {
+  return articles.map((article) => ({
+    slug: slugify(article.title),
+  }));
+}
+
 function getArticleBySlug(slug: string): Article | undefined {
-  // In a real app, you'd convert the slug to an ID or fetch by slug
-  // For this demo, we'll just find the first article
-  return articles.find(a => a.title.toLowerCase().replace(/\s+/g, '-').startsWith(slug.substring(0, 20)));
+  return articles.find(a => slugify(a.title) === slug);
+}
+
+type Props = {
+  params: { slug: string }
+}
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const article = getArticleBySlug(params.slug);
+
+  if (!article) {
+    return {
+      title: 'Article Not Found',
+    }
+  }
+ 
+  const previousImages = (await parent).openGraph?.images || []
+ 
+  return {
+    title: article.title,
+    description: article.summary,
+    openGraph: {
+      title: article.title,
+      description: article.summary,
+      url: `/article/${params.slug}`,
+      images: [article.imageUrl, ...previousImages],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: article.title,
+      description: article.summary,
+      images: [article.imageUrl],
+    },
+  }
 }
 
 export default function ArticlePage({ params }: { params: { slug: string } }) {

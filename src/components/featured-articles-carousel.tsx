@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
+import { slugify } from '@/lib/utils';
 
 export default function FeaturedArticlesCarousel() {
   const featuredArticles = articles.filter(article => article.featured);
@@ -23,7 +24,7 @@ export default function FeaturedArticlesCarousel() {
             <CarouselItem key={article.id} className="md:basis-1/2 lg:basis-1/3">
               <div className="p-1">
                 <Card className="h-full flex flex-col overflow-hidden transition-shadow hover:shadow-xl">
-                  <Link href={`/article/${article.title.toLowerCase().replace(/\s+/g, '-')}`} className="block relative w-full h-56">
+                  <Link href={`/article/${slugify(article.title)}`} className="block relative w-full h-56">
                     <Image
                       src={article.imageUrl}
                       alt={article.title}
@@ -35,7 +36,7 @@ export default function FeaturedArticlesCarousel() {
                   <CardHeader>
                     <Badge variant="secondary" className="w-fit mb-2">{article.category}</Badge>
                     <CardTitle className="text-2xl leading-tight">
-                      <Link href={`/article/${article.title.toLowerCase().replace(/\s+/g, '-')}`} className="hover:text-primary transition-colors">
+                      <Link href={`/article/${slugify(article.title)}`} className="hover:text-primary transition-colors">
                         {article.title}
                       </Link>
                     </CardTitle>

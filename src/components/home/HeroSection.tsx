@@ -4,12 +4,13 @@ import { articles } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowRight } from 'lucide-react';
+import { slugify } from '@/lib/utils';
 
 export default function HeroSection() {
   const heroArticle = articles.find(a => a.featured);
 
   if (!heroArticle) return null;
-  const articleSlug = heroArticle.title.toLowerCase().replace(/\s+/g, '-');
+  const articleSlug = slugify(heroArticle.title);
 
   return (
     <section className="relative h-[500px] rounded-lg overflow-hidden text-white">

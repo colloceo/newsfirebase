@@ -4,13 +4,14 @@ import type { Article } from '@/lib/data';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ArrowRight } from 'lucide-react';
+import { slugify } from '@/lib/utils';
 
 interface ArticleCardProps {
   article: Article;
 }
 
 export default function ArticleCard({ article }: ArticleCardProps) {
-  const articleSlug = article.title.toLowerCase().replace(/\s+/g, '-');
+  const articleSlug = slugify(article.title);
 
   return (
     <Card className="h-full flex flex-col overflow-hidden transition-shadow hover:shadow-xl">

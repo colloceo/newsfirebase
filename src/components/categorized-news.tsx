@@ -4,19 +4,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
+import { slugify } from '@/lib/utils';
 
 const categories: Article['category'][] = ['Politics', 'Business', 'Sports', 'Tech', 'Culture'];
 
 function ArticleList({ category }: { category: Article['category'] }) {
   const categoryArticles = articles.filter(article => article.category === category).slice(0, 4);
-  const articleSlug = (title: string) => title.toLowerCase().replace(/\s+/g, '-');
 
   return (
     <div className="space-y-6">
       {categoryArticles.map((article, index) => (
         <div key={article.id}>
           <Card className="border-0 shadow-none rounded-none flex flex-col md:flex-row gap-6">
-            <Link href={`/article/${articleSlug(article.title)}`} className="relative w-full md:w-1/3 h-48 md:h-auto flex-shrink-0">
+            <Link href={`/article/${slugify(article.title)}`} className="relative w-full md:w-1/3 h-48 md:h-auto flex-shrink-0">
               <Image
                 src={article.imageUrl}
                 alt={article.title}
@@ -28,7 +28,7 @@ function ArticleList({ category }: { category: Article['category'] }) {
             <div className="flex flex-col">
               <CardHeader className="p-0">
                 <CardTitle className="text-xl">
-                   <Link href={`/article/${articleSlug(article.title)}`} className="hover:text-primary transition-colors">
+                   <Link href={`/article/${slugify(article.title)}`} className="hover:text-primary transition-colors">
                       {article.title}
                     </Link>
                 </CardTitle>
