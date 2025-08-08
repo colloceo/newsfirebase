@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { Menu } from 'lucide-react';
+import { Menu, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import SearchForm from '@/components/common/SearchForm';
@@ -25,8 +25,8 @@ export default function Header() {
             <Image
               src="https://iili.io/FsGM311.png"
               alt="News254 Logo"
-              width={40}
-              height={40}
+              width={28}
+              height={28}
               className="object-contain"
               priority
             />
@@ -43,7 +43,13 @@ export default function Header() {
               <SearchForm />
             </div>
           </div>
-          <div className="lg:hidden">
+          <div className="lg:hidden flex items-center gap-2">
+             <Button variant="ghost" size="icon" asChild>
+                <Link href="/search">
+                  <Search />
+                  <span className="sr-only">Search</span>
+                </Link>
+              </Button>
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">
@@ -58,11 +64,14 @@ export default function Header() {
                      <Image
                         src="https://iili.io/FsGM311.png"
                         alt="News254 Logo"
-                        width={40}
-                        height={40}
+                        width={28}
+                        height={28}
                         className="object-contain"
                       />
                   </Link>
+                  <div className="mt-4">
+                    <SearchForm />
+                  </div>
                   <nav className="flex flex-col gap-2">
                     {navLinks.map((link) => (
                       <Button key={link.href} variant="ghost" asChild className="justify-start">
@@ -79,9 +88,6 @@ export default function Header() {
                         <Link href="/category/education">Education</Link>
                       </Button>
                   </nav>
-                   <div className="mt-4">
-                    <SearchForm />
-                  </div>
                 </div>
               </SheetContent>
             </Sheet>
