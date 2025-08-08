@@ -18,7 +18,8 @@ type Props = {
 export async function generateMetadata(
   { params }: Props
 ): Promise<Metadata> {
-  const categoryName = params.name.charAt(0).toUpperCase() + params.name.slice(1);
+  const name = params.name;
+  const categoryName = name.charAt(0).toUpperCase() + name.slice(1);
 
   return {
     title: `${categoryName} News`,
