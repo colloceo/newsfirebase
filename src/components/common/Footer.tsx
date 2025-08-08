@@ -6,17 +6,17 @@ import { allCategories } from '@/lib/data';
 export default function Footer() {
   return (
     <footer className="bg-gray-900 text-gray-300">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="container mx-auto px-4 py-8 md:py-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           
-          <div className="col-span-1 md:col-span-1">
+          <div className="col-span-1 sm:col-span-2 md:col-span-1">
             <div className="mb-4">
               <Link href="/">
                 <Image
                   src="https://iili.io/FsGM311.png"
                   alt="News254 Logo"
-                  width={100}
-                  height={26}
+                  width={28}
+                  height={28}
                   className="object-contain filter invert"
                 />
               </Link>
@@ -45,7 +45,7 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold text-white mb-4">Categories</h3>
             <ul className="space-y-2 text-sm">
-              {allCategories.map(category => (
+              {allCategories.slice(0,5).map(category => (
                 <li key={category}>
                   <Link href={`/category/${category.toLowerCase()}`} className="hover:text-primary transition-colors">{category}</Link>
                 </li>

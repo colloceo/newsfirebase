@@ -26,17 +26,17 @@ export default function ArticleCard({ article }: ArticleCardProps) {
       </Link>
       <CardHeader>
         <Badge variant="secondary" className="w-fit mb-2">{article.category}</Badge>
-        <CardTitle className="text-xl leading-tight">
+        <CardTitle className="text-lg md:text-xl leading-tight">
           <Link href={`/article/${articleSlug}`} className="hover:text-primary transition-colors">
             {article.title}
           </Link>
         </CardTitle>
       </CardHeader>
       <CardContent className="flex-grow">
-        <p className="text-muted-foreground line-clamp-3">{article.summary}</p>
+        <p className="text-muted-foreground line-clamp-3 text-sm md:text-base">{article.summary}</p>
       </CardContent>
       <CardFooter>
-         <Link href={`/article/${articleSlug}`} className="font-semibold text-primary hover:underline flex items-center">
+         <Link href={`/article/${articleSlug}`} className="font-semibold text-primary hover:underline flex items-center text-sm md:text-base">
             Read More <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
       </CardFooter>

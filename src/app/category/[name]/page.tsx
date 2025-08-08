@@ -49,20 +49,15 @@ export default function CategoryPage({ params }: { params: { name: string } }) {
   
   const articles = getArticlesByCategory(params.name);
 
-  if (articles.length === 0) {
-    // This can happen if a valid category has no articles yet.
-    // We can show a message instead of a 404.
-  }
-
   const categoryName = params.name.charAt(0).toUpperCase() + params.name.slice(1);
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header />
       <main className="flex-grow container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold mb-6 text-primary">{categoryName} News</h1>
+        <h1 className="text-3xl md:text-4xl font-bold mb-6 text-primary">{categoryName} News</h1>
         {articles.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {articles.map((article) => (
               <ArticleCard key={article.id} article={article} />
             ))}

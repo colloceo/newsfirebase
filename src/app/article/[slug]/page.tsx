@@ -85,17 +85,17 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <article className="lg:col-span-2">
             <div className="mb-6">
-              <h1 className="text-4xl font-bold mb-2">{article.title}</h1>
-              <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              <h1 className="text-3xl md:text-4xl font-bold mb-2">{article.title}</h1>
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
                 <span>By {author.name}</span>
-                <span>•</span>
+                <span className="hidden sm:inline">•</span>
                 <span>Published {new Date().toLocaleDateString()}</span>
-                 <span>•</span>
+                 <span className="hidden sm:inline">•</span>
                 <Badge variant="secondary">{article.category}</Badge>
               </div>
             </div>
             
-            <div className="relative w-full h-96 mb-6">
+            <div className="relative w-full h-64 md:h-96 mb-6">
               <Image
                 src={article.imageUrl}
                 alt={article.title}
@@ -108,8 +108,8 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
             
             <AdPlaceholder />
 
-            <div className="prose prose-lg max-w-none">
-              <p className="font-semibold text-lg">
+            <div className="prose prose-lg max-w-none prose-p:text-base md:prose-p:text-lg">
+              <p className="font-semibold text-lg md:text-xl">
                 The full story on how the Taifa Stars kicked off their CECAFA campaign with a decisive victory. Key moments and analysis from the opening match.
               </p>
               <p>
@@ -125,7 +125,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
             
             <AdPlaceholder />
             
-            <div className="my-8 flex justify-between items-center border-t border-b py-4">
+            <div className="my-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-t border-b py-4">
               <span className="font-semibold">Share this article:</span>
               <div className="flex gap-2">
                 <Button variant="outline" size="icon"><Twitter className="h-4 w-4" /></Button>
@@ -135,23 +135,23 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
               </div>
             </div>
 
-            <div className="bg-secondary p-6 rounded-lg flex items-center gap-6">
+            <div className="bg-secondary p-6 rounded-lg flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
                <Avatar className="w-20 h-20">
                   <AvatarImage src={author.avatar} data-ai-hint="person portrait" alt={author.name} />
                   <AvatarFallback>{author.name.substring(0, 2).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div>
                   <h3 className="font-bold text-lg">About {author.name}</h3>
-                  <p className="text-muted-foreground">{author.bio}</p>
+                  <p className="text-muted-foreground text-sm md:text-base">{author.bio}</p>
                 </div>
             </div>
 
             <div className="mt-12">
               <h2 className="text-2xl font-bold mb-4">Comments (0)</h2>
-              <div className="space-y-4">
+              <form className="space-y-4">
                 <Textarea placeholder="Write a comment..." rows={4} />
                 <Button>Post Comment</Button>
-              </div>
+              </form>
               <div className="mt-6 text-center text-muted-foreground">
                 <p>No comments yet. Be the first to comment!</p>
               </div>

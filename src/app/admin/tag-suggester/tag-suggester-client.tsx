@@ -17,7 +17,7 @@ function SubmitButton() {
   const { pending } = useFormStatus();
 
   return (
-    <Button type="submit" disabled={pending}>
+    <Button type="submit" disabled={pending} size="lg">
       {pending ? (
         <>
           <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
@@ -40,7 +40,7 @@ export default function TagSuggesterClient() {
     <Card className="max-w-3xl mx-auto">
       <form action={formAction}>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-2xl">
+          <CardTitle className="flex items-center gap-2 text-xl md:text-2xl">
             <Tags className="h-6 w-6 text-primary" />
             <span>AI-Powered Tag Suggester</span>
           </CardTitle>
@@ -64,7 +64,7 @@ export default function TagSuggesterClient() {
               <h3 className="font-semibold mb-2 font-headline">Suggested Tags:</h3>
               <div className="flex flex-wrap gap-2">
                 {state.tags.map((tag) => (
-                  <Badge key={tag} variant="secondary" className="text-base py-1 px-3">
+                  <Badge key={tag} variant="secondary" className="text-sm md:text-base py-1 px-3">
                     {tag}
                   </Badge>
                 ))}

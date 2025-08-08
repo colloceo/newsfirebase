@@ -40,12 +40,12 @@ function SearchResults({ query }: { query: string }) {
 
   return (
     <>
-      <h1 className="text-4xl font-bold mb-6 text-primary">
+      <h1 className="text-2xl md:text-4xl font-bold mb-6 text-primary break-all">
         {query ? `Search results for "${query}"` : 'Search for an article'}
       </h1>
 
       {query && searchResults.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {searchResults.map((article) => (
             <ArticleCard key={article.id} article={article} />
           ))}

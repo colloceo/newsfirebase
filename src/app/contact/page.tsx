@@ -11,9 +11,9 @@ export default function ContactPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header />
-      <main className="flex-grow container mx-auto px-4 py-12">
+      <main className="flex-grow container mx-auto px-4 py-8 md:py-12">
         <div className="max-w-2xl mx-auto">
-          <h1 className="text-4xl font-bold text-primary mb-4 text-center">Contact Us</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-primary mb-4 text-center">Contact Us</h1>
           <p className="text-center text-foreground/80 mb-8">
             We'd love to hear from you! Whether you have a news tip, a question, or feedback, please don't hesitate to get in touch.
           </p>
@@ -50,7 +50,7 @@ export default function ContactPage() {
             </div>
 
             <div className="text-center">
-              <Button type="submit" size="lg" className="bg-primary hover:bg-primary/90">
+              <Button type="submit" size="lg" className="bg-primary hover:bg-primary/90 w-full md:w-auto">
                 <Mail className="mr-2 h-5 w-5" />
                 Send Message
               </Button>

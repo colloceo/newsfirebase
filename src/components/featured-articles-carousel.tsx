@@ -11,7 +11,7 @@ export default function FeaturedArticlesCarousel() {
 
   return (
     <section aria-labelledby="featured-articles-title">
-      <h2 id="featured-articles-title" className="text-3xl font-bold mb-4">Featured Stories</h2>
+      <h2 id="featured-articles-title" className="text-2xl md:text-3xl font-bold mb-4">Featured Stories</h2>
       <Carousel
         opts={{
           align: "start",
@@ -19,9 +19,9 @@ export default function FeaturedArticlesCarousel() {
         }}
         className="w-full"
       >
-        <CarouselContent>
+        <CarouselContent className="-ml-2">
           {featuredArticles.map((article) => (
-            <CarouselItem key={article.id} className="md:basis-1/2 lg:basis-1/3">
+            <CarouselItem key={article.id} className="pl-2 basis-full sm:basis-1/2 lg:basis-1/3">
               <div className="p-1">
                 <Card className="h-full flex flex-col overflow-hidden transition-shadow hover:shadow-xl">
                   <Link href={`/article/${slugify(article.title)}`} className="block relative w-full h-56">
@@ -35,14 +35,14 @@ export default function FeaturedArticlesCarousel() {
                   </Link>
                   <CardHeader>
                     <Badge variant="secondary" className="w-fit mb-2">{article.category}</Badge>
-                    <CardTitle className="text-2xl leading-tight">
+                    <CardTitle className="text-xl md:text-2xl leading-tight">
                       <Link href={`/article/${slugify(article.title)}`} className="hover:text-primary transition-colors">
                         {article.title}
                       </Link>
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="flex-grow">
-                    <CardDescription>{article.summary}</CardDescription>
+                    <CardDescription className="text-sm md:text-base">{article.summary}</CardDescription>
                   </CardContent>
                 </Card>
               </div>

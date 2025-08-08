@@ -15,7 +15,7 @@ export default function TrendingNewsSidebar() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="h-6 w-6 text-primary" />
-            <span className="text-2xl">Trending</span>
+            <span className="text-xl md:text-2xl">Trending</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -33,7 +33,7 @@ export default function TrendingNewsSidebar() {
                     />
                   </div>
                   <div>
-                    <h3 className="font-bold leading-tight group-hover:text-primary transition-colors">{article.title}</h3>
+                    <h3 className="font-bold leading-tight group-hover:text-primary transition-colors text-sm md:text-base">{article.title}</h3>
                     <p className="text-sm text-muted-foreground mt-1">{article.category}</p>
                   </div>
                 </Link>
