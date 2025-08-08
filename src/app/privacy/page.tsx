@@ -1,11 +1,13 @@
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import { Shield, FileText } from 'lucide-react';
+import BreakingNewsTicker from '@/components/breaking-news-ticker';
 
 export default function PrivacyPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header />
+      <BreakingNewsTicker />
       <main className="flex-grow container mx-auto px-4 py-8 md:py-12">
         <div className="max-w-4xl mx-auto prose lg:prose-xl prose-headings:text-primary prose-p:text-base md:prose-p:text-lg">
           <div className="text-center mb-10">

@@ -4,6 +4,7 @@ import ArticleCard from '@/components/common/ArticleCard';
 import { articles, Article, allCategories } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
+import BreakingNewsTicker from '@/components/breaking-news-ticker';
 
 function getArticlesByCategory(categoryName: string): Article[] {
   const normalizedCategory = categoryName.charAt(0).toUpperCase() + categoryName.slice(1);
@@ -54,6 +55,7 @@ export default function CategoryPage({ params }: { params: { name: string } }) {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header />
+      <BreakingNewsTicker />
       <main className="flex-grow container mx-auto px-4 py-8">
         <h1 className="text-3xl md:text-4xl font-bold mb-6 text-primary">{categoryName} News</h1>
         {articles.length > 0 ? (

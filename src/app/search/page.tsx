@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Search as SearchIcon } from 'lucide-react';
 import SearchForm from '@/components/common/SearchForm';
+import BreakingNewsTicker from '@/components/breaking-news-ticker';
 
 function getArticlesByQuery(query: string): Article[] {
   if (!query) return [];
@@ -70,6 +71,7 @@ export default function SearchPage({ searchParams }: Props) {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header />
+      <BreakingNewsTicker />
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="max-w-xl mx-auto mb-8 lg:hidden">
             <SearchForm initialQuery={query} />

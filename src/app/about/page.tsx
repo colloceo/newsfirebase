@@ -2,6 +2,7 @@ import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Building, Users, Goal } from 'lucide-react';
+import BreakingNewsTicker from '@/components/breaking-news-ticker';
 
 const teamMembers = [
   { name: 'Collins Otieno', role: 'Lead Developer', initials: 'CO' },
@@ -13,6 +14,7 @@ export default function AboutPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header />
+      <BreakingNewsTicker />
       <main className="flex-grow container mx-auto px-4 py-8 md:py-12">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl md:text-4xl font-bold text-primary mb-6 text-center">About News254</h1>

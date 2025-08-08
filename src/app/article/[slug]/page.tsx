@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Facebook, Twitter, Linkedin, Link as LinkIcon } from 'lucide-react';
 import type { Metadata, ResolvingMetadata } from 'next';
 import { slugify } from '@/lib/utils';
+import BreakingNewsTicker from '@/components/breaking-news-ticker';
 
 // This function generates the slugs for all articles
 export async function generateStaticParams() {
@@ -81,6 +82,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header />
+      <BreakingNewsTicker />
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <article className="lg:col-span-2">

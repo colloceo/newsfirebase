@@ -6,11 +6,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Mail, MessageSquare, Newspaper, HelpCircle } from 'lucide-react';
+import BreakingNewsTicker from '@/components/breaking-news-ticker';
 
 export default function ContactPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header />
+      <BreakingNewsTicker />
       <main className="flex-grow container mx-auto px-4 py-8 md:py-12">
         <div className="max-w-2xl mx-auto">
           <h1 className="text-3xl md:text-4xl font-bold text-primary mb-4 text-center">Contact Us</h1>
