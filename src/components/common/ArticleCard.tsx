@@ -10,9 +10,11 @@ interface ArticleCardProps {
 }
 
 export default function ArticleCard({ article }: ArticleCardProps) {
+  const articleSlug = article.title.toLowerCase().replace(/\s+/g, '-');
+
   return (
     <Card className="h-full flex flex-col overflow-hidden transition-shadow hover:shadow-xl">
-      <div className="relative w-full h-52">
+      <Link href={`/article/${articleSlug}`} className="block relative w-full h-52">
         <Image
           src={article.imageUrl}
           alt={article.title}
@@ -20,11 +22,11 @@ export default function ArticleCard({ article }: ArticleCardProps) {
           data-ai-hint={article.imageHint}
           className="object-cover"
         />
-      </div>
+      </Link>
       <CardHeader>
         <Badge variant="secondary" className="w-fit mb-2">{article.category}</Badge>
         <CardTitle className="text-xl leading-tight">
-          <Link href="#" className="hover:text-primary transition-colors">
+          <Link href={`/article/${articleSlug}`} className="hover:text-primary transition-colors">
             {article.title}
           </Link>
         </CardTitle>
@@ -33,7 +35,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
         <p className="text-muted-foreground line-clamp-3">{article.summary}</p>
       </CardContent>
       <CardFooter>
-         <Link href="#" className="font-semibold text-primary hover:underline flex items-center">
+         <Link href={`/article/${articleSlug}`} className="font-semibold text-primary hover:underline flex items-center">
             Read More <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
       </CardFooter>

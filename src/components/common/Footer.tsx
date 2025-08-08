@@ -1,49 +1,67 @@
 import Link from 'next/link';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Mail, Facebook, Twitter, Instagram } from 'lucide-react';
+import { Newspaper, Mail, Phone, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
+
+const categories = ['Politics', 'Business', 'Technology', 'Sports', 'Entertainment'];
 
 export default function Footer() {
   return (
-    <footer className="bg-primary text-primary-foreground">
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div>
-            <h3 className="text-2xl font-bold font-headline mb-2">News254</h3>
-            <p className="text-primary-foreground/80">
-              Your trusted source for Kenyan news.
+    <footer className="bg-gray-900 text-gray-300">
+      <div className="container mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          
+          <div className="col-span-1 md:col-span-1">
+            <div className="flex items-center gap-2 mb-4">
+              <Newspaper className="h-8 w-8 text-primary" />
+              <h2 className="text-2xl font-bold text-white">News254</h2>
+            </div>
+            <p className="text-sm text-gray-400">
+              Your trusted source for timely and accurate news coverage on Kenya and beyond. We bring you the latest on politics, business, technology, and more.
             </p>
-            <div className="flex space-x-4 mt-4">
-              <Link href="#" className="text-primary-foreground hover:text-accent"><Facebook /></Link>
-              <Link href="#" className="text-primary-foreground hover:text-accent"><Twitter /></Link>
-              <Link href="#" className="text-primary-foreground hover:text-accent"><Instagram /></Link>
+            <div className="flex space-x-4 mt-6">
+              <Link href="#" className="text-gray-400 hover:text-primary"><Facebook /></Link>
+              <Link href="#" className="text-gray-400 hover:text-primary"><Twitter /></Link>
+              <Link href="#" className="text-gray-400 hover:text-primary"><Instagram /></Link>
+              <Link href="#" className="text-gray-400 hover:text-primary"><Linkedin /></Link>
             </div>
           </div>
+
           <div>
-            <h3 className="text-xl font-bold font-headline mb-4">Quick Links</h3>
-            <ul className="space-y-2">
-              <li><Link href="/about" className="hover:text-accent transition-colors">About Us</Link></li>
-              <li><Link href="/contact" className="hover:text-accent transition-colors">Contact Us</Link></li>
-              <li><Link href="/privacy" className="hover:text-accent transition-colors">Privacy Policy</Link></li>
+            <h3 className="text-lg font-semibold text-white mb-4">Quick Links</h3>
+            <ul className="space-y-2 text-sm">
+              <li><Link href="/about" className="hover:text-primary transition-colors">About Us</Link></li>
+              <li><Link href="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
+              <li><Link href="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/terms" className="hover:text-primary transition-colors">Terms of Service</Link></li>
             </ul>
           </div>
+          
           <div>
-            <h3 className="text-xl font-bold font-headline mb-4">Subscribe to our Newsletter</h3>
-             <form className="flex w-full max-w-md items-center space-x-2">
-                <Input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="bg-primary-foreground text-primary placeholder:text-muted-foreground"
-                  aria-label="Email for newsletter"
-                />
-                <Button type="submit" variant="default" className="bg-accent text-accent-foreground hover:bg-accent/90">
-                  <Mail className="mr-2 h-4 w-4" />
-                  Subscribe
-                </Button>
-              </form>
+            <h3 className="text-lg font-semibold text-white mb-4">Categories</h3>
+            <ul className="space-y-2 text-sm">
+              {categories.map(category => (
+                <li key={category}>
+                  <Link href={`/category/${category.toLowerCase()}`} className="hover:text-primary transition-colors">{category}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-semibold text-white mb-4">Contact Info</h3>
+            <ul className="space-y-3 text-sm">
+              <li className="flex items-center gap-3">
+                <Mail className="w-5 h-5 text-primary" />
+                <span>info@news254.co.ke</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <Phone className="w-5 h-5 text-primary" />
+                <span>+254 700 000 000</span>
+              </li>
+            </ul>
           </div>
         </div>
-        <div className="mt-8 border-t border-primary-foreground/20 pt-6 text-center text-primary-foreground/60">
+        
+        <div className="mt-12 border-t border-gray-800 pt-6 text-center text-sm text-gray-500">
           <p>&copy; {new Date().getFullYear()} News254. All rights reserved.</p>
         </div>
       </div>

@@ -23,7 +23,7 @@ export default function FeaturedArticlesCarousel() {
             <CarouselItem key={article.id} className="md:basis-1/2 lg:basis-1/3">
               <div className="p-1">
                 <Card className="h-full flex flex-col overflow-hidden transition-shadow hover:shadow-xl">
-                  <div className="relative w-full h-56">
+                  <Link href={`/article/${article.title.toLowerCase().replace(/\s+/g, '-')}`} className="block relative w-full h-56">
                     <Image
                       src={article.imageUrl}
                       alt={article.title}
@@ -31,11 +31,11 @@ export default function FeaturedArticlesCarousel() {
                       data-ai-hint={article.imageHint}
                       className="object-cover"
                     />
-                  </div>
+                  </Link>
                   <CardHeader>
                     <Badge variant="secondary" className="w-fit mb-2">{article.category}</Badge>
                     <CardTitle className="text-2xl leading-tight">
-                      <Link href="#" className="hover:text-primary transition-colors">
+                      <Link href={`/article/${article.title.toLowerCase().replace(/\s+/g, '-')}`} className="hover:text-primary transition-colors">
                         {article.title}
                       </Link>
                     </CardTitle>
