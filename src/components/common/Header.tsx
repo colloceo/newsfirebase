@@ -4,6 +4,7 @@ import { Menu, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import SearchForm from '@/components/common/SearchForm';
+import { allCategories } from '@/lib/data';
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -25,8 +26,8 @@ export default function Header() {
             <Image
               src="https://iili.io/FsGM311.png"
               alt="News254 Logo"
-              width={28}
-              height={28}
+              width={40}
+              height={40}
               className="object-contain"
               priority
             />
@@ -68,8 +69,8 @@ export default function Header() {
                      <Image
                         src="https://iili.io/FsGM311.png"
                         alt="News254 Logo"
-                        width={28}
-                        height={28}
+                        width={40}
+                        height={40}
                         className="object-contain"
                       />
                       <div>
@@ -81,20 +82,11 @@ export default function Header() {
                     <SearchForm />
                   </div>
                   <nav className="flex flex-col gap-2">
-                    {navLinks.map((link) => (
-                      <Button key={link.href} variant="ghost" asChild className="justify-start">
-                        <Link href={link.href}>{link.label}</Link>
+                    {allCategories.map((category) => (
+                       <Button key={category} variant="ghost" asChild className="justify-start">
+                        <Link href={`/category/${category.toLowerCase()}`}>{category}</Link>
                       </Button>
                     ))}
-                     <Button variant="ghost" asChild className="justify-start">
-                        <Link href="/category/lifestyle">Lifestyle</Link>
-                      </Button>
-                      <Button variant="ghost" asChild className="justify-start">
-                        <Link href="/category/opinion">Opinion</Link>
-                      </Button>
-                       <Button variant="ghost" asChild className="justify-start">
-                        <Link href="/category/education">Education</Link>
-                      </Button>
                   </nav>
                 </div>
               </SheetContent>
