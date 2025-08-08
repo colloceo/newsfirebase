@@ -25,8 +25,8 @@ export default function Header() {
             <Image
               src="https://iili.io/FsGM311.png"
               alt="News254 Logo"
-              width={90}
-              height={24}
+              width={40}
+              height={40}
               className="object-contain"
               priority
             />
@@ -39,7 +39,9 @@ export default function Header() {
                 </Button>
               ))}
             </nav>
-            <SearchForm />
+            <div className="w-full max-w-xs">
+              <SearchForm />
+            </div>
           </div>
           <div className="lg:hidden">
             <Sheet>
@@ -56,8 +58,8 @@ export default function Header() {
                      <Image
                         src="https://iili.io/FsGM311.png"
                         alt="News254 Logo"
-                        width={90}
-                        height={24}
+                        width={40}
+                        height={40}
                         className="object-contain"
                       />
                   </Link>
