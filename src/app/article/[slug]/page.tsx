@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { articles, Article } from '@/lib/data';
+import { getArticleBySlug, getTrendingArticles, getArticles, Article } from '@/lib/data';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import TrendingNewsSidebar from '@/components/trending-news-sidebar';
@@ -15,13 +15,10 @@ import BreakingNewsTicker from '@/components/breaking-news-ticker';
 
 // This function generates the slugs for all articles
 export async function generateStaticParams() {
+  const articles = await getArticles();
   return articles.map((article) => ({
     slug: slugify(article.title),
   }));
-}
-
-function getArticleBySlug(slug: string): Article | undefined {
-  return articles.find(a => slugify(a.title) === slug);
 }
 
 type Props = {
@@ -32,7 +29,7 @@ export async function generateMetadata(
   { params }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const article = getArticleBySlug(params.slug);
+  const article = await getArticleBySlug(params.slug);
 
   if (!article) {
     return {
@@ -60,8 +57,9 @@ export async function generateMetadata(
   }
 }
 
-export default function ArticlePage({ params }: { params: { slug: string } }) {
-  const article = getArticleBySlug(params.slug);
+export default async function ArticlePage({ params }: { params: { slug: string } }) {
+  const article = await getArticleBySlug(params.slug);
+  const trendingArticles = await getTrendingArticles();
 
   if (!article) {
     notFound();
@@ -162,7 +160,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
 
           <aside className="lg:col-span-1">
             <div className="sticky top-24 space-y-8">
-              <TrendingNewsSidebar />
+              <TrendingNewsSidebar articles={trendingArticles} />
             </div>
           </aside>
         </div>

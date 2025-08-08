@@ -1,16 +1,11 @@
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import ArticleCard from '@/components/common/ArticleCard';
-import { articles, Article, allCategories } from '@/lib/data';
+import { getArticlesByCategory, allCategories } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import BreakingNewsTicker from '@/components/breaking-news-ticker';
 
-function getArticlesByCategory(categoryName: string): Article[] {
-  const normalizedCategory = categoryName.charAt(0).toUpperCase() + categoryName.slice(1);
-  const categoryArticles = articles.filter(article => article.category.toLowerCase() === normalizedCategory.toLowerCase());
-  return categoryArticles;
-}
 
 type Props = {
   params: { name: string }
@@ -43,12 +38,12 @@ export async function generateStaticParams() {
 }
 
 
-export default function CategoryPage({ params }: { params: { name: string } }) {
+export default async function CategoryPage({ params }: { params: { name: string } }) {
    if (!allCategories.map(c => c.toLowerCase()).includes(params.name.toLowerCase())) {
     notFound();
   }
   
-  const articles = getArticlesByCategory(params.name);
+  const articles = await getArticlesByCategory(params.name);
 
   const categoryName = params.name.charAt(0).toUpperCase() + params.name.slice(1);
 

@@ -1,19 +1,20 @@
-import Image from 'next/image';
-import { articles, Article, allCategories } from '@/lib/data';
+import { getArticlesByCategory, Article } from '@/lib/data';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
+import Image from 'next/image';
 import { slugify } from '@/lib/utils';
 
 const categoriesToShow: Article['category'][] = ['Politics', 'Business', 'Sports', 'Tech', 'Entertainment'];
 
-function ArticleList({ category }: { category: Article['category'] }) {
-  const categoryArticles = articles.filter(article => article.category === category).slice(0, 4);
+async function ArticleList({ category }: { category: Article['category'] }) {
+  const categoryArticles = await getArticlesByCategory(category);
+  const articlesToShow = categoryArticles.slice(0, 4);
 
   return (
     <div className="space-y-6">
-      {categoryArticles.map((article, index) => (
+      {articlesToShow.map((article, index) => (
         <div key={article.id}>
           <Card className="border-0 shadow-none rounded-none flex flex-col md:flex-row gap-4 md:gap-6">
             <Link href={`/article/${slugify(article.title)}`} className="relative w-full md:w-1/3 h-48 md:h-auto flex-shrink-0">
@@ -38,7 +39,7 @@ function ArticleList({ category }: { category: Article['category'] }) {
               </CardContent>
             </div>
           </Card>
-          {index < categoryArticles.length - 1 && <Separator className="mt-6" />}
+          {index < articlesToShow.length - 1 && <Separator className="mt-6" />}
         </div>
       ))}
     </div>

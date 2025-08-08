@@ -1,11 +1,11 @@
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import ArticleForm from '@/components/admin/ArticleForm';
-import { articles } from '@/lib/data';
+import { getArticle } from '@/lib/data';
 import { notFound } from 'next/navigation';
 
-export default function EditArticlePage({ params }: { params: { id: string } }) {
-  const article = articles.find(a => a.id === parseInt(params.id));
+export default async function EditArticlePage({ params }: { params: { id: string } }) {
+  const article = await getArticle(params.id);
 
   if (!article) {
     notFound();

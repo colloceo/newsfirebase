@@ -2,17 +2,14 @@ import { Suspense } from 'react';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import ArticleCard from '@/components/common/ArticleCard';
-import { articles, Article } from '@/lib/data';
-import { notFound } from 'next/navigation';
+import { getArticles, Article } from '@/lib/data';
 import type { Metadata } from 'next';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Search as SearchIcon } from 'lucide-react';
 import SearchForm from '@/components/common/SearchForm';
 import BreakingNewsTicker from '@/components/breaking-news-ticker';
 
-function getArticlesByQuery(query: string): Article[] {
+async function getArticlesByQuery(query: string): Promise<Article[]> {
   if (!query) return [];
+  const articles = await getArticles();
   return articles.filter(article =>
     article.title.toLowerCase().includes(query.toLowerCase()) ||
     article.summary.toLowerCase().includes(query.toLowerCase()) ||
@@ -36,8 +33,8 @@ export async function generateMetadata(
   }
 }
 
-function SearchResults({ query }: { query: string }) {
-  const searchResults = getArticlesByQuery(query);
+async function SearchResults({ query }: { query: string }) {
+  const searchResults = await getArticlesByQuery(query);
 
   return (
     <>

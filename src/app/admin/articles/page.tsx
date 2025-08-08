@@ -3,7 +3,7 @@ import Footer from '@/components/common/Footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { articles } from '@/lib/data';
+import { getArticles, Article } from '@/lib/data';
 import { PlusCircle, MoreHorizontal, Edit, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import {
@@ -14,7 +14,9 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Badge } from '@/components/ui/badge';
 
-export default function ManageArticlesPage() {
+export default async function ManageArticlesPage() {
+  const articles = await getArticles();
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header />

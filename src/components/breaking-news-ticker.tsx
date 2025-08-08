@@ -1,10 +1,10 @@
-import { articles } from '@/lib/data';
+import { getBreakingNews } from '@/lib/data';
 import { Dot } from 'lucide-react';
 import Link from 'next/link';
 import { slugify } from '@/lib/utils';
 
-export default function BreakingNewsTicker() {
-  const breakingNews = articles.filter(article => article.breaking);
+export default async function BreakingNewsTicker() {
+  const breakingNews = await getBreakingNews();
 
   if (breakingNews.length === 0) {
     return null;
@@ -22,7 +22,7 @@ export default function BreakingNewsTicker() {
         <div className="relative flex-1 overflow-hidden h-6">
           <div className="absolute flex animation-marquee items-center">
             {tickerItems.map((item, index) => (
-              <Link key={index} href={`/article/${slugify(item.title)}`} className="flex items-center flex-shrink-0 px-2 sm:px-4 group">
+              <Link key={`${item.id}-${index}`} href={`/article/${slugify(item.title)}`} className="flex items-center flex-shrink-0 px-2 sm:px-4 group">
                 <p className="whitespace-nowrap text-xs sm:text-sm group-hover:underline">{item.title}</p>
                 {index < tickerItems.length - 1 && <Dot className="h-6 w-6 text-white/50 flex-shrink-0" />}
               </Link>

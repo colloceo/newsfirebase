@@ -1,9 +1,13 @@
+import { db } from './firebase';
+import { collection, getDocs, doc, getDoc, query, where, limit, orderBy } from 'firebase/firestore';
+import { slugify } from './utils';
+
 export type ArticleCategory = 'Politics' | 'Business' | 'Sports' | 'Tech' | 'Culture' | 'Entertainment' | 'World' | 'Africa' | 'Health' | 'Lifestyle' | 'Opinion' | 'Education';
 
 export const allCategories: ArticleCategory[] = ['Politics', 'Business', 'Sports', 'Tech', 'Culture', 'Entertainment', 'World', 'Africa', 'Health', 'Lifestyle', 'Opinion', 'Education'];
 
 export type Article = {
-  id: number;
+  id: string; // Firestore document ID
   title: string;
   category: ArticleCategory;
   summary: string;
@@ -12,119 +16,72 @@ export type Article = {
   featured?: boolean;
   trending?: boolean;
   breaking?: boolean;
+  createdAt?: any; // Firestore timestamp
 };
 
-export const articles: Article[] = [
-  {
-    id: 1,
-    title: "Government Unveils New Economic Stimulus Package",
-    category: "Politics",
-    summary: "The government has announced a new multi-billion shilling package aimed at revitalizing the economy after a period of slow growth. The package targets small and medium enterprises.",
-    imageUrl: "https://placehold.co/800x600.png",
-    imageHint: "government building",
-    featured: true,
-    trending: true,
-    breaking: true,
-  },
-  {
-    id: 2,
-    title: "Nairobi Securities Exchange Sees Record Highs",
-    category: "Business",
-    summary: "The stock market has reached an all-time high, driven by strong performance in the tech and financial sectors. Investors are optimistic about future growth.",
-    imageUrl: "https://placehold.co/800x600.png",
-    imageHint: "stock market",
-    featured: false,
-    trending: true,
-  },
-  {
-    id: 3,
-    title: "Harambee Stars Qualify for Continental Cup",
-    category: "Sports",
-    summary: "The national football team, Harambee Stars, secured their spot in the upcoming continental tournament with a thrilling victory over their rivals.",
-    imageUrl: "https://placehold.co/800x600.png",
-    imageHint: "soccer match",
-    featured: false,
-    trending: true,
-    breaking: true,
-  },
-  {
-    id: 4,
-    title: "Kenyan Tech Startup Lands Major International Funding",
-    category: "Tech",
-    summary: "A local tech startup specializing in mobile payments has secured a significant investment from a Silicon Valley venture capital firm, paving the way for expansion.",
-    imageUrl: "https://placehold.co/800x600.png",
-    imageHint: "startup office",
-    featured: false,
-    trending: true,
-  },
-  {
-    id: 5,
-    title: "Annual Cultural Festival Showcases National Heritage",
-    category: "Culture",
-    summary: "The annual cultural festival kicked off in Nairobi, featuring vibrant performances, art exhibitions, and traditional cuisine from across the country.",
-    imageUrl: "https://placehold.co/800x600.png",
-    imageHint: "cultural festival",
-    featured: false,
-  },
-  {
-    id: 6,
-    title: "Parliament Debates Controversial Finance Bill",
-    category: "Politics",
-    summary: "Members of Parliament are engaged in a heated debate over the proposed finance bill, which includes several new tax measures.",
-    imageUrl: "https://placehold.co/400x300.png",
-    imageHint: "parliament debate",
-    trending: true,
-  },
-  {
-    id: 7,
-    title: "Central Bank Maintains Key Interest Rate",
-    category: "Business",
-    summary: "The Central Bank's monetary policy committee has decided to hold the key lending rate steady, citing stable inflation.",
-    imageUrl: "https://placehold.co/400x300.png",
-    imageHint: "bank building",
-  },
-  {
-    id: 8,
-    title: "Athletics Kenya Announces Marathon Team",
-    category: "Sports",
-    summary: "The official team that will represent Kenya in the upcoming international marathon has been announced, featuring a mix of veterans and new talent.",
-    imageUrl: "https://placehold.co/400x300.png",
-    imageHint: "marathon runners",
-    trending: true,
-  },
-  {
-    id: 9,
-    title: "New Fiber Optic Cable to Boost Internet Speeds",
-    category: "Tech",
-    summary: "The landing of a new undersea fiber optic cable is expected to significantly increase internet speeds and reduce costs for consumers.",
-    imageUrl: "https://placehold.co/400x300.png",
-    imageHint: "fiber optics",
-  },
-  {
-    id: 10,
-    title: "Nairobi Art Scene Buzzes with New Gallery Openings",
-    category: "Culture",
-    summary: "The city's art scene is experiencing a renaissance, with several new contemporary art galleries opening their doors to the public.",
-    imageUrl: "https://placehold.co/400x300.png",
-    imageHint: "art gallery",
-    breaking: true,
-  },
-  {
-    id: 11,
-    title: "New Breakthrough in Malaria Vaccine Research",
-    category: "Health",
-    summary: "Scientists have announced a promising new vaccine candidate for malaria, which could save millions of lives across the continent.",
-    imageUrl: "https://placehold.co/800x600.png",
-    imageHint: "science laboratory",
-    trending: true,
-  },
-   {
-    id: 12,
-    title: "East African Community Agrees on Trade Pact",
-    category: "World",
-    summary: "Leaders from the East African Community have signed a landmark trade agreement to boost regional commerce and economic integration.",
-    imageUrl: "https://placehold.co/800x600.png",
-    imageHint: "political leaders meeting",
-    featured: true,
-  },
-];
+const articlesCollection = collection(db, 'articles');
+
+// Helper to convert a Firestore doc to an Article object
+const fromFirestore = (doc: any): Article => {
+  const data = doc.data();
+  return {
+    id: doc.id,
+    title: data.title,
+    category: data.category,
+    summary: data.summary,
+    imageUrl: data.imageUrl,
+    imageHint: data.imageHint,
+    featured: data.featured || false,
+    trending: data.trending || false,
+    breaking: data.breaking || false,
+    createdAt: data.createdAt,
+  };
+};
+
+export async function getArticles(count?: number): Promise<Article[]> {
+  const q = count ? query(articlesCollection, orderBy('createdAt', 'desc'), limit(count)) : query(articlesCollection, orderBy('createdAt', 'desc'));
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(fromFirestore);
+}
+
+export async function getArticle(id: string): Promise<Article | null> {
+  const docRef = doc(db, 'articles', id);
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    return fromFirestore(docSnap);
+  }
+  return null;
+}
+
+export async function getArticlesByCategory(category: string): Promise<Article[]> {
+    const normalizedCategory = category.charAt(0).toUpperCase() + category.slice(1);
+    const q = query(articlesCollection, where('category', '==', normalizedCategory), orderBy('createdAt', 'desc'));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(fromFirestore);
+}
+
+export async function getArticleBySlug(slug: string): Promise<Article | null> {
+    const allArticles = await getArticles();
+    // This is not efficient for large datasets, but works for this example.
+    // A better approach would be to store the slug in the document itself.
+    return allArticles.find(a => slugify(a.title) === slug) || null;
+}
+
+
+export async function getFeaturedArticles(): Promise<Article[]> {
+  const q = query(articlesCollection, where('featured', '==', true), orderBy('createdAt', 'desc'), limit(5));
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(fromFirestore);
+}
+
+export async function getTrendingArticles(): Promise<Article[]> {
+  const q = query(articlesCollection, where('trending', '==', true), orderBy('createdAt', 'desc'), limit(5));
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(fromFirestore);
+}
+
+export async function getBreakingNews(): Promise<Article[]> {
+  const q = query(articlesCollection, where('breaking', '==', true), orderBy('createdAt', 'desc'), limit(5));
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(fromFirestore);
+}

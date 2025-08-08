@@ -1,14 +1,12 @@
 import Image from 'next/image';
-import { articles } from '@/lib/data';
+import { Article } from '@/lib/data';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { slugify } from '@/lib/utils';
 
-export default function FeaturedArticlesCarousel() {
-  const featuredArticles = articles.filter(article => article.featured);
-
+export default function FeaturedArticlesCarousel({ articles }: { articles: Article[] }) {
   return (
     <section aria-labelledby="featured-articles-title">
       <h2 id="featured-articles-title" className="text-2xl md:text-3xl font-bold mb-4">Featured Stories</h2>
@@ -20,7 +18,7 @@ export default function FeaturedArticlesCarousel() {
         className="w-full"
       >
         <CarouselContent className="-ml-2">
-          {featuredArticles.map((article) => (
+          {articles.map((article) => (
             <CarouselItem key={article.id} className="pl-2 basis-full sm:basis-1/2 lg:basis-1/3">
               <div className="p-1">
                 <Card className="h-full flex flex-col overflow-hidden transition-shadow hover:shadow-xl">
