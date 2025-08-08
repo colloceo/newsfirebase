@@ -1,12 +1,12 @@
 import Image from 'next/image';
-import { articles, Article } from '@/lib/data';
+import { articles, Article, allCategories } from '@/lib/data';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 import { slugify } from '@/lib/utils';
 
-const categories: Article['category'][] = ['Politics', 'Business', 'Sports', 'Tech', 'Culture'];
+const categoriesToShow: Article['category'][] = ['Politics', 'Business', 'Sports', 'Tech', 'Entertainment'];
 
 function ArticleList({ category }: { category: Article['category'] }) {
   const categoryArticles = articles.filter(article => article.category === category).slice(0, 4);
@@ -51,11 +51,11 @@ export default function CategorizedNews() {
       <h2 id="categorized-news-title" className="text-3xl font-bold mb-4">In-depth Coverage</h2>
       <Tabs defaultValue="Politics" className="w-full">
         <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 mb-4 h-auto flex-wrap">
-          {categories.map(category => (
+          {categoriesToShow.map(category => (
             <TabsTrigger key={category} value={category} className="text-base">{category}</TabsTrigger>
           ))}
         </TabsList>
-        {categories.map(category => (
+        {categoriesToShow.map(category => (
           <TabsContent key={category} value={category}>
             <ArticleList category={category} />
           </TabsContent>

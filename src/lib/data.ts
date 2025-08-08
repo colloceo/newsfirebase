@@ -1,7 +1,11 @@
+export type ArticleCategory = 'Politics' | 'Business' | 'Sports' | 'Tech' | 'Culture' | 'Entertainment' | 'World' | 'Africa' | 'Health' | 'Lifestyle' | 'Opinion' | 'Education';
+
+export const allCategories: ArticleCategory[] = ['Politics', 'Business', 'Sports', 'Tech', 'Culture', 'Entertainment', 'World', 'Africa', 'Health', 'Lifestyle', 'Opinion', 'Education'];
+
 export type Article = {
   id: number;
   title: string;
-  category: 'Politics' | 'Business' | 'Sports' | 'Tech' | 'Culture';
+  category: ArticleCategory;
   summary: string;
   imageUrl: string;
   imageHint: string;
@@ -104,5 +108,23 @@ export const articles: Article[] = [
     imageUrl: "https://placehold.co/400x300.png",
     imageHint: "art gallery",
     breaking: true,
+  },
+  {
+    id: 11,
+    title: "New Breakthrough in Malaria Vaccine Research",
+    category: "Health",
+    summary: "Scientists have announced a promising new vaccine candidate for malaria, which could save millions of lives across the continent.",
+    imageUrl: "https://placehold.co/800x600.png",
+    imageHint: "science laboratory",
+    trending: true,
+  },
+   {
+    id: 12,
+    title: "East African Community Agrees on Trade Pact",
+    category: "World",
+    summary: "Leaders from the East African Community have signed a landmark trade agreement to boost regional commerce and economic integration.",
+    imageUrl: "https://placehold.co/800x600.png",
+    imageHint: "political leaders meeting",
+    featured: true,
   },
 ];

@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { Newspaper, Mail, Phone, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
-
-const categories = ['Politics', 'Business', 'Technology', 'Sports', 'Entertainment'];
+import { allCategories } from '@/lib/data';
 
 export default function Footer() {
   return (
@@ -38,7 +37,7 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold text-white mb-4">Categories</h3>
             <ul className="space-y-2 text-sm">
-              {categories.map(category => (
+              {allCategories.map(category => (
                 <li key={category}>
                   <Link href={`/category/${category.toLowerCase()}`} className="hover:text-primary transition-colors">{category}</Link>
                 </li>

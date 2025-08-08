@@ -1,11 +1,9 @@
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import ArticleCard from '@/components/common/ArticleCard';
-import { articles, Article } from '@/lib/data';
+import { articles, Article, allCategories } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-
-const validCategories = ['politics', 'business', 'sports', 'tech', 'culture', 'entertainment'];
 
 function getArticlesByCategory(categoryName: string): Article[] {
   const normalizedCategory = categoryName.charAt(0).toUpperCase() + categoryName.slice(1);
@@ -37,14 +35,14 @@ export async function generateMetadata(
 }
 
 export async function generateStaticParams() {
-  return validCategories.map((name) => ({
-    name,
+  return allCategories.map((name) => ({
+    name: name.toLowerCase(),
   }));
 }
 
 
 export default function CategoryPage({ params }: { params: { name: string } }) {
-   if (!validCategories.includes(params.name.toLowerCase())) {
+   if (!allCategories.map(c => c.toLowerCase()).includes(params.name.toLowerCase())) {
     notFound();
   }
   

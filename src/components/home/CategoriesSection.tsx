@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Newspaper, Landmark, Briefcase, Cpu, Trophy, Palette } from 'lucide-react';
+import { Landmark, Briefcase, Cpu, Trophy, Film, Globe, HeartPulse, Sparkles, Pencil, BookOpen } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 const categories: { name: string; icon: LucideIcon, href: string }[] = [
@@ -8,7 +8,12 @@ const categories: { name: string; icon: LucideIcon, href: string }[] = [
     { name: 'Business', icon: Briefcase, href: '/category/business' },
     { name: 'Tech', icon: Cpu, href: '/category/tech' },
     { name: 'Sports', icon: Trophy, href: '/category/sports' },
-    { name: 'Culture', icon: Palette, href: '/category/culture' },
+    { name: 'Entertainment', icon: Film, href: '/category/entertainment' },
+    { name: 'World', icon: Globe, href: '/category/world' },
+    { name: 'Health', icon: HeartPulse, href: '/category/health' },
+    { name: 'Lifestyle', icon: Sparkles, href: '/category/lifestyle' },
+    { name: 'Opinion', icon: Pencil, href: '/category/opinion' },
+    { name: 'Education', icon: BookOpen, href: '/category/education' },
 ];
 
 export default function CategoriesSection() {

@@ -8,9 +8,11 @@ const navLinks = [
   { href: "/", label: "Home" },
   { href: "/category/politics", label: "Politics" },
   { href: "/category/business", label: "Business" },
-  { href: "/category/tech", label: "Technology" },
+  { href: "/category/tech", label: "Tech" },
   { href: "/category/sports", label: "Sports" },
   { href: "/category/entertainment", label: "Entertainment" },
+  { href: "/category/world", label: "World" },
+  { href: "/category/health", label: "Health" },
 ];
 
 export default function Header() {
@@ -58,6 +60,15 @@ export default function Header() {
                         <Link href={link.href}>{link.label}</Link>
                       </Button>
                     ))}
+                     <Button variant="ghost" asChild className="justify-start">
+                        <Link href="/category/lifestyle">Lifestyle</Link>
+                      </Button>
+                      <Button variant="ghost" asChild className="justify-start">
+                        <Link href="/category/opinion">Opinion</Link>
+                      </Button>
+                       <Button variant="ghost" asChild className="justify-start">
+                        <Link href="/category/education">Education</Link>
+                      </Button>
                   </nav>
                    <div className="relative mt-4">
                     <Input type="search" placeholder="Search..." className="pl-10"/>
