@@ -1,6 +1,7 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { handleSuggestTags } from './actions';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -34,7 +35,7 @@ function SubmitButton() {
 }
 
 export default function TagSuggesterClient() {
-  const [state, formAction] = useFormState(handleSuggestTags, initialState);
+  const [state, formAction] = useActionState(handleSuggestTags, initialState);
 
   return (
     <Card className="max-w-3xl mx-auto">
