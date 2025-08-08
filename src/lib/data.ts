@@ -1,5 +1,5 @@
 import { db } from './firebase';
-import { collection, getDocs, doc, getDoc, query, where, limit, orderBy } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, query, where, limit, orderBy, Timestamp } from 'firebase/firestore';
 import { slugify } from './utils';
 
 export type ArticleCategory = 'Politics' | 'Business' | 'Sports' | 'Tech' | 'Culture' | 'Entertainment' | 'World' | 'Africa' | 'Health' | 'Lifestyle' | 'Opinion' | 'Education';
@@ -16,16 +16,16 @@ export type Article = {
   featured?: boolean;
   trending?: boolean;
   breaking?: boolean;
-  createdAt?: any; // Firestore timestamp
+  createdAt: Timestamp;
 };
 
 const articlesCollection = collection(db, 'articles');
 
 // Helper to convert a Firestore doc to an Article object
-const fromFirestore = (doc: any): Article => {
-  const data = doc.data();
+const fromFirestore = (docSnapshot: any): Article => {
+  const data = docSnapshot.data();
   return {
-    id: doc.id,
+    id: docSnapshot.id,
     title: data.title,
     category: data.category,
     summary: data.summary,

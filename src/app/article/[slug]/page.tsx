@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { getArticleBySlug, getTrendingArticles, getArticles, Article } from '@/lib/data';
+import { getArticleBySlug, getTrendingArticles, getArticles } from '@/lib/data';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import TrendingNewsSidebar from '@/components/trending-news-sidebar';
@@ -89,7 +89,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
                 <span>By {author.name}</span>
                 <span className="hidden sm:inline">•</span>
-                <span>Published {new Date().toLocaleDateString()}</span>
+                <span>Published {article.createdAt.toDate().toLocaleDateString()}</span>
                  <span className="hidden sm:inline">•</span>
                 <Badge variant="secondary">{article.category}</Badge>
               </div>

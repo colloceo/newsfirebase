@@ -4,6 +4,9 @@ import { Shield, FileText } from 'lucide-react';
 import BreakingNewsTicker from '@/components/breaking-news-ticker';
 
 export default function PrivacyPage() {
+  
+  const [lastUpdated, setLastUpdated] = React.useState(new Date().toLocaleDateString());
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header />
@@ -14,7 +17,7 @@ export default function PrivacyPage() {
             <h1 className="text-3xl md:text-4xl font-bold mb-4 flex items-center justify-center gap-3">
               <Shield className="w-10 h-10" /> Privacy Policy
             </h1>
-            <p className="text-lg text-foreground/80">Last updated: {new Date().toLocaleDateString()}</p>
+            <p className="text-lg text-foreground/80">Last updated: {lastUpdated}</p>
           </div>
 
           <p>
