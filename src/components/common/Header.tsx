@@ -1,8 +1,9 @@
 import Link from 'next/link';
-import { Newspaper, Search, Menu } from 'lucide-react';
+import Image from 'next/image';
+import { Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import SearchForm from '@/components/common/SearchForm';
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -21,10 +22,14 @@ export default function Header() {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center py-3">
           <Link href="/" className="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity">
-            <Newspaper className="h-8 w-8" />
-            <h1 className="text-3xl font-bold tracking-tight hidden sm:block">
-              News254
-            </h1>
+            <Image
+              src="https://iili.io/FsGM311.png"
+              alt="News254 Logo"
+              width={150}
+              height={40}
+              className="object-contain"
+              priority
+            />
           </Link>
           <div className="hidden lg:flex items-center gap-4">
             <nav className="flex items-center gap-1">
@@ -34,10 +39,7 @@ export default function Header() {
                 </Button>
               ))}
             </nav>
-            <div className="relative">
-              <Input type="search" placeholder="Search..." className="pl-10"/>
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-            </div>
+            <SearchForm />
           </div>
           <div className="lg:hidden">
             <Sheet>
@@ -48,11 +50,16 @@ export default function Header() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="left">
-                <SheetTitle className="sr-only">Menu</SheetTitle>
+                <SheetTitle className="sr-only">News254 Menu</SheetTitle>
                 <div className="flex flex-col gap-4 p-4">
                   <Link href="/" className="flex items-center gap-2 text-primary mb-4">
-                     <Newspaper className="h-8 w-8" />
-                     <h1 className="text-3xl font-bold tracking-tight">News254</h1>
+                     <Image
+                        src="https://iili.io/FsGM311.png"
+                        alt="News254 Logo"
+                        width={150}
+                        height={40}
+                        className="object-contain"
+                      />
                   </Link>
                   <nav className="flex flex-col gap-2">
                     {navLinks.map((link) => (
@@ -70,9 +77,8 @@ export default function Header() {
                         <Link href="/category/education">Education</Link>
                       </Button>
                   </nav>
-                   <div className="relative mt-4">
-                    <Input type="search" placeholder="Search..." className="pl-10"/>
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                   <div className="mt-4">
+                    <SearchForm />
                   </div>
                 </div>
               </SheetContent>

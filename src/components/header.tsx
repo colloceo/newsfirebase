@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Newspaper } from 'lucide-react';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 
 export default function Header() {
@@ -7,10 +7,14 @@ export default function Header() {
     <header className="bg-card shadow-md">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <Link href="/" className="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity">
-          <Newspaper className="h-8 w-8" />
-          <h1 className="text-3xl font-bold tracking-tight">
-            News254
-          </h1>
+          <Image
+            src="https://iili.io/FsGM311.png"
+            alt="News254 Logo"
+            width={150}
+            height={40}
+            className="object-contain"
+            priority
+          />
         </Link>
         <nav className="flex items-center gap-2">
           <Button variant="ghost" asChild>

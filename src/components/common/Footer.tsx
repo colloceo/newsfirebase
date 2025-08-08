@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { Newspaper, Mail, Phone, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
+import Image from 'next/image';
+import { Mail, Phone, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
 import { allCategories } from '@/lib/data';
 
 export default function Footer() {
@@ -9,9 +10,16 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           
           <div className="col-span-1 md:col-span-1">
-            <div className="flex items-center gap-2 mb-4">
-              <Newspaper className="h-8 w-8 text-primary" />
-              <h2 className="text-2xl font-bold text-white">News254</h2>
+            <div className="mb-4">
+              <Link href="/">
+                <Image
+                  src="https://iili.io/FsGM311.png"
+                  alt="News254 Logo"
+                  width={180}
+                  height={45}
+                  className="object-contain filter invert"
+                />
+              </Link>
             </div>
             <p className="text-sm text-gray-400">
               Your trusted source for timely and accurate news coverage on Kenya and beyond. We bring you the latest on politics, business, technology, and more.
