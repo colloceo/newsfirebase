@@ -15,8 +15,8 @@ export default function Footer() {
                 <Image
                   src="https://iili.io/FsGM311.png"
                   alt="News254 Logo"
-                  width={140}
-                  height={35}
+                  width={100}
+                  height={26}
                   className="object-contain filter invert"
                 />
               </Link>

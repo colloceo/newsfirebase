@@ -25,8 +25,8 @@ export default function Header() {
             <Image
               src="https://iili.io/FsGM311.png"
               alt="News254 Logo"
-              width={120}
-              height={32}
+              width={90}
+              height={24}
               className="object-contain"
               priority
             />
@@ -56,8 +56,8 @@ export default function Header() {
                      <Image
                         src="https://iili.io/FsGM311.png"
                         alt="News254 Logo"
-                        width={120}
-                        height={32}
+                        width={90}
+                        height={24}
                         className="object-contain"
                       />
                   </Link>
