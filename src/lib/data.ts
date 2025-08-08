@@ -29,7 +29,7 @@ export const articles: Article[] = [
     summary: "The stock market has reached an all-time high, driven by strong performance in the tech and financial sectors. Investors are optimistic about future growth.",
     imageUrl: "https://placehold.co/800x600.png",
     imageHint: "stock market",
-    featured: true,
+    featured: false,
     trending: true,
   },
   {
@@ -39,7 +39,7 @@ export const articles: Article[] = [
     summary: "The national football team, Harambee Stars, secured their spot in the upcoming continental tournament with a thrilling victory over their rivals.",
     imageUrl: "https://placehold.co/800x600.png",
     imageHint: "soccer match",
-    featured: true,
+    featured: false,
     trending: true,
     breaking: true,
   },
@@ -50,7 +50,7 @@ export const articles: Article[] = [
     summary: "A local tech startup specializing in mobile payments has secured a significant investment from a Silicon Valley venture capital firm, paving the way for expansion.",
     imageUrl: "https://placehold.co/800x600.png",
     imageHint: "startup office",
-    featured: true,
+    featured: false,
     trending: true,
   },
   {
