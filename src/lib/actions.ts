@@ -2,20 +2,9 @@
 
 import { revalidatePath } from 'next/cache';
 import { db } from './firebase';
-import { collection, addDoc, serverTimestamp, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, doc, updateDoc, deleteDoc, Timestamp } from 'firebase/firestore';
 import { z } from 'zod';
-
-// A helper type for article data without the ID
-type ArticleData = {
-    title: string;
-    category: string;
-    summary: string;
-    imageUrl: string;
-    imageHint: string;
-    featured?: boolean;
-    trending?: boolean;
-    breaking?: boolean;
-};
+import { slugify } from './utils';
 
 // Zod schema for validation
 const articleSchema = z.object({
@@ -63,6 +52,7 @@ export async function saveArticle(
   }
   
   const { id, ...articleData } = validatedFields.data;
+  const articleSlug = slugify(articleData.title);
 
   try {
     if (id) {
@@ -73,7 +63,7 @@ export async function saveArticle(
       // Create new article
       await addDoc(collection(db, 'articles'), {
           ...articleData,
-          createdAt: serverTimestamp(),
+          createdAt: serverTimestamp() as Timestamp,
       });
     }
 
@@ -82,7 +72,7 @@ export async function saveArticle(
     revalidatePath('/admin/articles');
     revalidatePath(`/category/${articleData.category.toLowerCase()}`);
     if (id) {
-      revalidatePath(`/article/${id}`);
+      revalidatePath(`/article/${articleSlug}`);
     }
 
     return { message: `Article ${id ? 'updated' : 'published'} successfully.`, success: true };
