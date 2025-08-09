@@ -1,8 +1,6 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { getClient } from './mongodb';
-import { Collection, Db, MongoClient, ObjectId } from 'mongodb';
 import { z } from 'zod';
 import { slugify } from './utils';
 
@@ -24,13 +22,6 @@ export type FormState = {
   success: boolean;
 };
 
-// Helper to get the articles collection
-async function getArticlesCollection(): Promise<{ client: MongoClient, collection: Collection }> {
-  const client = await getClient();
-  const db: Db = client.db();
-  const collection = db.collection('articles');
-  return { client, collection };
-}
 
 export async function saveArticle(
   prevState: FormState,
@@ -61,20 +52,12 @@ export async function saveArticle(
   const articleSlug = slugify(articleData.title);
 
   try {
-    const { collection } = await getArticlesCollection();
-
+    // In a real app, you would save to a database here.
+    // We'll just log it to the console for this mock version.
     if (articleId) {
-      // Update existing article
-      await collection.updateOne(
-        { _id: new ObjectId(articleId) },
-        { $set: articleData }
-      );
+      console.log('Updating article:', { id: articleId, ...articleData });
     } else {
-      // Create new article
-      await collection.insertOne({
-          ...articleData,
-          createdAt: new Date(),
-      });
+      console.log('Creating new article:', { id: Date.now().toString(), ...articleData, createdAt: new Date() });
     }
 
     // Revalidate paths to show the new/updated article immediately
@@ -95,12 +78,10 @@ export async function saveArticle(
 
 // Function to delete an article
 export async function deleteArticle(id: string) {
-    if (!ObjectId.isValid(id)) {
-      throw new Error("Invalid article ID.");
-    }
     try {
-        const { collection } = await getArticlesCollection();
-        await collection.deleteOne({ _id: new ObjectId(id) });
+        // In a real app, you'd delete from the database.
+        // We'll just log it for this mock version.
+        console.log("Deleting article with ID:", id);
         revalidatePath('/admin/articles');
         revalidatePath('/');
     } catch (error) {
