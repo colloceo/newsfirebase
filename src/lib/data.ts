@@ -1,4 +1,5 @@
 import { slugify } from './utils';
+import { query } from './mysql';
 
 export type ArticleCategory = 'Politics' | 'Business' | 'Sports' | 'Tech' | 'Culture' | 'Entertainment' | 'World' | 'Africa' | 'Health' | 'Lifestyle' | 'Opinion' | 'Education';
 
@@ -17,168 +18,14 @@ export interface Article {
   createdAt: Date;
 };
 
-export const mockArticles: Article[] = [
-    {
-        id: '1',
-        title: "Taifa Stars Shine in CECAFA Opener",
-        category: 'Sports',
-        summary: "Tanzania's Taifa Stars kicked off their CECAFA campaign with a decisive 2-0 victory over Somalia, showcasing a dominant performance at home.",
-        imageUrl: "https://placehold.co/600x400.png",
-        imageHint: "soccer match",
-        featured: true,
-        trending: true,
-        breaking: true,
-        createdAt: new Date('2024-07-20T10:00:00Z')
-    },
-    {
-        id: '2',
-        title: "Kenyan Shilling Gains Against the Dollar",
-        category: 'Business',
-        summary: "The Kenyan shilling has seen a significant appreciation against the US dollar this week, attributed to increased diaspora remittances and horticultural exports.",
-        imageUrl: "https://placehold.co/600x400.png",
-        imageHint: "money currency",
-        trending: true,
-        createdAt: new Date('2024-07-20T09:00:00Z')
-    },
-    {
-        id: '3',
-        title: "New Tech Hub Launched in Nairobi to Foster Innovation",
-        category: 'Tech',
-        summary: "A state-of-the-art technology hub was unveiled in Nairobi's Kilimani area, aiming to provide mentorship and funding for over 200 startups annually.",
-        imageUrl: "https://placehold.co/600x400.png",
-        imageHint: "modern office",
-        featured: true,
-        createdAt: new Date('2024-07-19T15:30:00Z')
-    },
-    {
-        id: '4',
-        title: "Political Temperatures Rise Ahead of By-Elections",
-        category: 'Politics',
-        summary: "Major political parties are ramping up their campaigns in the coastal region as the highly anticipated by-elections draw near, with coalitions being tested.",
-        imageUrl: "https://placehold.co/600x400.png",
-        imageHint: "political debate",
-        breaking: true,
-        createdAt: new Date('2024-07-20T11:00:00Z')
-    },
-    {
-        id: '5',
-        title: "Annual Maasai Mara Migration Begins",
-        category: 'Entertainment',
-        summary: "The great wildebeest migration has officially begun, with thousands of tourists flocking to the Maasai Mara National Reserve to witness the spectacular event.",
-        imageUrl: "https://placehold.co/600x400.png",
-        imageHint: "wildebeest migration",
-        trending: true,
-        createdAt: new Date('2024-07-19T08:00:00Z')
-    },
-    {
-        id: '6',
-        title: "Healthcare Reforms: What You Need to Know",
-        category: 'Health',
-        summary: "The Ministry of Health has rolled out a new set of reforms aimed at improving primary healthcare access across all 47 counties.",
-        imageUrl: "https://placehold.co/600x400.png",
-        imageHint: "hospital interior",
-        createdAt: new Date('2024-07-18T14:00:00Z')
-    },
-     {
-        id: '7',
-        title: "Global Markets React to New US Federal Reserve Policy",
-        category: 'World',
-        summary: "International stock markets experienced volatility following the announcement of the US Federal Reserve's new interest rate policy, with emerging markets being closely watched.",
-        imageUrl: "https://placehold.co/600x400.png",
-        imageHint: "stock market chart",
-        featured: true,
-        createdAt: new Date('2024-07-18T12:00:00Z')
-    },
-    {
-        id: '8',
-        title: "Kenyan Film 'Uprooted' Wins International Award",
-        category: 'Culture',
-        summary: "The local film 'Uprooted' has bagged the Best Feature Film award at the Pan-African Film Festival, highlighting the growth of the Kenyan film industry.",
-        imageUrl: "https://placehold.co/600x400.png",
-        imageHint: "film festival award",
-        createdAt: new Date('2024-07-17T20:00:00Z')
-    }
-];
-
-
-export async function getArticles(count?: number): Promise<Article[]> {
-  const sortedArticles = mockArticles.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-  if (count) {
-    return sortedArticles.slice(0, count);
-  }
-  return sortedArticles;
-}
-
-export async function getArticle(id: string): Promise<Article | null> {
-  const article = mockArticles.find(a => a.id === id);
-  return article || null;
-}
-
-export async function getArticlesByCategory(category: string): Promise<Article[]> {
-    const normalizedCategory = category.charAt(0).toUpperCase() + category.slice(1);
-    const articles = mockArticles.filter(a => a.category.toLowerCase() === normalizedCategory.toLowerCase());
-    return articles.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-}
-
-export async function getArticleBySlug(slug: string): Promise<Article | null> {
-    const article = mockArticles.find(a => slugify(a.title) === slug);
-    return article || null;
-}
-
-export async function getFeaturedArticles(): Promise<Article[]> {
-  const articles = mockArticles.filter(a => a.featured);
-  return articles.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()).slice(0, 5);
-}
-
-export async function getTrendingArticles(): Promise<Article[]> {
-  const articles = mockArticles.filter(a => a.trending);
-  return articles.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()).slice(0, 5);
-}
-
-export async function getBreakingNews(): Promise<Article[]> {
-  const articles = mockArticles.filter(a => a.breaking);
-  return articles.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()).slice(0, 5);
-}
-
-
-/*
-================================================================================
-MYSQL IMPLEMENTATION GUIDE
-================================================================================
-
-Below is an example of how you could implement the data fetching functions using
-a MySQL database. You would need a library like 'mysql2/promise'.
-
-First, create a connection helper in `src/lib/mysql.ts`:
-
-// src/lib/mysql.ts
-import mysql from 'mysql2/promise';
-
-export async function query(sql: string, params: any[]) {
-  const connection = await mysql.createConnection({
-    host: process.env.MYSQL_HOST,
-    database: process.env.MYSQL_DATABASE,
-    user: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASSWORD,
-  });
-
-  try {
-    const [results] = await connection.execute(sql, params);
-    return results;
-  } finally {
-    await connection.end();
-  }
-}
-
-
-Then, you could rewrite the functions in this file (`src/lib/data.ts`) like this:
-
-// NOTE: Remember to handle data mapping from SQL rows to the Article object.
-// The boolean values for featured, trending, breaking might be stored as 0/1 in SQL.
-
 function mapRowToArticle(row: any): Article {
     return {
-        ...row,
+        id: String(row.id),
+        title: row.title,
+        category: row.category,
+        summary: row.summary,
+        imageUrl: row.imageUrl,
+        imageHint: row.imageHint,
         featured: Boolean(row.featured),
         trending: Boolean(row.trending),
         breaking: Boolean(row.breaking),
@@ -188,6 +35,7 @@ function mapRowToArticle(row: any): Article {
 
 
 export async function getArticles(count?: number): Promise<Article[]> {
+  try {
     const sql = `
         SELECT * FROM articles 
         ORDER BY createdAt DESC
@@ -196,18 +44,71 @@ export async function getArticles(count?: number): Promise<Article[]> {
     const params = count ? [count] : [];
     const rows = await query(sql, params) as any[];
     return rows.map(mapRowToArticle);
+  } catch (error) {
+    console.error("Error fetching articles:", error);
+    return [];
+  }
 }
 
 export async function getArticle(id: string): Promise<Article | null> {
+  try {
     const rows = await query('SELECT * FROM articles WHERE id = ?', [id]) as any[];
     if (rows.length === 0) return null;
     return mapRowToArticle(rows[0]);
+  } catch (error) {
+    console.error(`Error fetching article with id ${id}:`, error);
+    return null;
+  }
 }
 
 export async function getArticlesByCategory(category: string): Promise<Article[]> {
-    const rows = await query('SELECT * FROM articles WHERE category = ? ORDER BY createdAt DESC', [category]) as any[];
+  try {
+    const normalizedCategory = category.charAt(0).toUpperCase() + category.slice(1);
+    const rows = await query('SELECT * FROM articles WHERE category = ? ORDER BY createdAt DESC', [normalizedCategory]) as any[];
     return rows.map(mapRowToArticle);
+  } catch (error) {
+     console.error(`Error fetching articles for category ${category}:`, error);
+     return [];
+  }
 }
 
-// And so on for the other functions...
-*/
+export async function getArticleBySlug(slug: string): Promise<Article | null> {
+    try {
+        const articles = await getArticles();
+        const article = articles.find(a => slugify(a.title) === slug);
+        return article || null;
+    } catch(error) {
+        console.error(`Error fetching article by slug ${slug}:`, error);
+        return null;
+    }
+}
+
+export async function getFeaturedArticles(): Promise<Article[]> {
+  try {
+    const rows = await query('SELECT * FROM articles WHERE featured = 1 ORDER BY createdAt DESC LIMIT 5', []) as any[];
+    return rows.map(mapRowToArticle);
+  } catch(error) {
+    console.error("Error fetching featured articles:", error);
+    return [];
+  }
+}
+
+export async function getTrendingArticles(): Promise<Article[]> {
+  try {
+    const rows = await query('SELECT * FROM articles WHERE trending = 1 ORDER BY createdAt DESC LIMIT 5', []) as any[];
+    return rows.map(mapRowToArticle);
+  } catch(error) {
+    console.error("Error fetching trending articles:", error);
+    return [];
+  }
+}
+
+export async function getBreakingNews(): Promise<Article[]> {
+  try {
+    const rows = await query('SELECT * FROM articles WHERE breaking = 1 ORDER BY createdAt DESC LIMIT 5', []) as any[];
+    return rows.map(mapRowToArticle);
+  } catch(error) {
+    console.error("Error fetching breaking news:", error);
+    return [];
+  }
+}

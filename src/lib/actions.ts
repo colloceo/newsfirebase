@@ -3,8 +3,8 @@
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { slugify } from './utils';
-import { allCategories, mockArticles } from './data';
-import type { Article } from './data';
+import { query } from './mysql';
+
 
 const articleSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -49,76 +49,6 @@ export async function saveArticle(
     };
   }
   
-  const { ...articleData } = validatedFields.data;
-
-  try {
-    if (articleId) {
-      const index = mockArticles.findIndex(a => a.id === articleId);
-      if (index !== -1) {
-        mockArticles[index] = { ...mockArticles[index], ...articleData };
-      }
-    } else {
-      const newArticle: Article = {
-        id: (mockArticles.length + 1).toString(),
-        ...articleData,
-        createdAt: new Date(),
-      };
-      mockArticles.unshift(newArticle);
-    }
-
-    revalidatePath('/');
-    revalidatePath('/admin/articles');
-    revalidatePath(`/category/${articleData.category.toLowerCase()}`);
-    if (articleId) {
-      const articleSlug = slugify(articleData.title);
-      revalidatePath(`/article/${articleSlug}`);
-    }
-
-    return { message: `Article ${articleId ? 'updated' : 'published'} successfully.`, success: true };
-
-  } catch (error) {
-    console.error("Failed to save article:", error);
-    return { message: 'Failed to save the article. Please try again.', success: false };
-  }
-}
-
-
-export async function deleteArticle(id: string) {
-    try {
-        const index = mockArticles.findIndex(a => a.id === id);
-        if (index !== -1) {
-          mockArticles.splice(index, 1);
-        }
-        revalidatePath('/admin/articles');
-        revalidatePath('/');
-    } catch (error) {
-        console.error("Error deleting article: ", error);
-        throw new Error("Could not delete article.");
-    }
-}
-
-/*
-================================================================================
-MYSQL IMPLEMENTATION GUIDE
-================================================================================
-
-Below is an example of how you could implement the save and delete actions
-using a MySQL database and the `query` helper from `src/lib/mysql.ts`.
-
-export async function saveArticle(
-  prevState: FormState,
-  formData: FormData
-): Promise<FormState> {
-  const articleId = formData.get('id') as string | null;
-
-  const validatedFields = articleSchema.safeParse({
-    // ... same validation as above
-  });
-
-  if (!validatedFields.success) {
-    // ... same error handling
-  }
-  
   const { title, category, summary, imageUrl, imageHint, featured, trending, breaking } = validatedFields.data;
 
   try {
@@ -138,7 +68,13 @@ export async function saveArticle(
       await query(sql, [title, category, summary, imageUrl, imageHint, featured, trending, breaking]);
     }
 
-    // ... same revalidation logic ...
+    revalidatePath('/');
+    revalidatePath('/admin/articles');
+    revalidatePath(`/category/${validatedFields.data.category.toLowerCase()}`);
+    if (articleId) {
+      const articleSlug = slugify(validatedFields.data.title);
+      revalidatePath(`/article/${articleSlug}`);
+    }
 
     return { message: `Article ${articleId ? 'updated' : 'published'} successfully.`, success: true };
 
@@ -159,5 +95,3 @@ export async function deleteArticle(id: string) {
         throw new Error("Could not delete article.");
     }
 }
-
-*/
