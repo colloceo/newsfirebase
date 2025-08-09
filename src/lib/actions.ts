@@ -3,10 +3,8 @@
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { slugify } from './utils';
-import { getDb } from './mongodb';
-import { ObjectId } from 'mongodb';
+import { allCategories, mockArticles } from './data';
 import type { Article } from './data';
-
 
 const articleSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -52,28 +50,27 @@ export async function saveArticle(
   }
   
   const { ...articleData } = validatedFields.data;
-  const articleSlug = slugify(articleData.title);
 
   try {
-     const db = await getDb();
-     const collection = db.collection('articles');
-
     if (articleId) {
-       if (!ObjectId.isValid(articleId)) {
-        return { message: 'Invalid article ID.', success: false };
+      const index = mockArticles.findIndex(a => a.id === articleId);
+      if (index !== -1) {
+        mockArticles[index] = { ...mockArticles[index], ...articleData };
       }
-      await collection.updateOne(
-        { _id: new ObjectId(articleId) },
-        { $set: articleData }
-      );
     } else {
-      await collection.insertOne({ ...articleData, createdAt: new Date() });
+      const newArticle: Article = {
+        id: (mockArticles.length + 1).toString(),
+        ...articleData,
+        createdAt: new Date(),
+      };
+      mockArticles.unshift(newArticle);
     }
 
     revalidatePath('/');
     revalidatePath('/admin/articles');
     revalidatePath(`/category/${articleData.category.toLowerCase()}`);
     if (articleId) {
+      const articleSlug = slugify(articleData.title);
       revalidatePath(`/article/${articleSlug}`);
     }
 
@@ -87,18 +84,15 @@ export async function saveArticle(
 
 
 export async function deleteArticle(id: string) {
-    if (!ObjectId.isValid(id)) {
-        throw new Error("Invalid article ID.");
-    }
     try {
-        const db = await getDb();
-        const collection = db.collection('articles');
-        await collection.deleteOne({ _id: new ObjectId(id) });
-        
+        const index = mockArticles.findIndex(a => a.id === id);
+        if (index !== -1) {
+          mockArticles.splice(index, 1);
+        }
         revalidatePath('/admin/articles');
         revalidatePath('/');
     } catch (error) {
-        console.error("Error deleting document: ", error);
+        console.error("Error deleting article: ", error);
         throw new Error("Could not delete article.");
     }
 }
