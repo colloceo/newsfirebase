@@ -3,8 +3,11 @@
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { slugify } from './utils';
+import { getDb } from './mongodb';
+import { ObjectId } from 'mongodb';
+import type { Article } from './data';
 
-// Zod schema for validation
+
 const articleSchema = z.object({
   title: z.string().min(1, "Title is required"),
   category: z.string().min(1, "Category is required"),
@@ -52,15 +55,21 @@ export async function saveArticle(
   const articleSlug = slugify(articleData.title);
 
   try {
-    // In a real app, you would save to a database here.
-    // We'll just log it to the console for this mock version.
+     const db = await getDb();
+     const collection = db.collection('articles');
+
     if (articleId) {
-      console.log('Updating article:', { id: articleId, ...articleData });
+       if (!ObjectId.isValid(articleId)) {
+        return { message: 'Invalid article ID.', success: false };
+      }
+      await collection.updateOne(
+        { _id: new ObjectId(articleId) },
+        { $set: articleData }
+      );
     } else {
-      console.log('Creating new article:', { id: Date.now().toString(), ...articleData, createdAt: new Date() });
+      await collection.insertOne({ ...articleData, createdAt: new Date() });
     }
 
-    // Revalidate paths to show the new/updated article immediately
     revalidatePath('/');
     revalidatePath('/admin/articles');
     revalidatePath(`/category/${articleData.category.toLowerCase()}`);
@@ -76,12 +85,16 @@ export async function saveArticle(
   }
 }
 
-// Function to delete an article
+
 export async function deleteArticle(id: string) {
+    if (!ObjectId.isValid(id)) {
+        throw new Error("Invalid article ID.");
+    }
     try {
-        // In a real app, you'd delete from the database.
-        // We'll just log it for this mock version.
-        console.log("Deleting article with ID:", id);
+        const db = await getDb();
+        const collection = db.collection('articles');
+        await collection.deleteOne({ _id: new ObjectId(id) });
+        
         revalidatePath('/admin/articles');
         revalidatePath('/');
     } catch (error) {
