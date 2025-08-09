@@ -1,14 +1,13 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { db } from './firebase';
-import { collection, addDoc, serverTimestamp, doc, updateDoc, deleteDoc, Timestamp } from 'firebase/firestore';
+import { getClient } from './mongodb';
+import { Collection, Db, MongoClient, ObjectId } from 'mongodb';
 import { z } from 'zod';
 import { slugify } from './utils';
 
 // Zod schema for validation
 const articleSchema = z.object({
-  id: z.string().optional(),
   title: z.string().min(1, "Title is required"),
   category: z.string().min(1, "Category is required"),
   summary: z.string().min(1, "Summary is required"),
@@ -25,6 +24,14 @@ export type FormState = {
   success: boolean;
 };
 
+// Helper to get the articles collection
+async function getArticlesCollection(): Promise<{ client: MongoClient, collection: Collection }> {
+  const client = await getClient();
+  const db: Db = client.db();
+  const collection = db.collection('articles');
+  return { client, collection };
+}
+
 export async function saveArticle(
   prevState: FormState,
   formData: FormData
@@ -32,7 +39,6 @@ export async function saveArticle(
   const articleId = formData.get('id') as string | null;
 
   const validatedFields = articleSchema.safeParse({
-    id: articleId,
     title: formData.get('title'),
     category: formData.get('category'),
     summary: formData.get('summary'),
@@ -51,19 +57,23 @@ export async function saveArticle(
     };
   }
   
-  const { id, ...articleData } = validatedFields.data;
+  const { ...articleData } = validatedFields.data;
   const articleSlug = slugify(articleData.title);
 
   try {
-    if (id) {
+    const { collection } = await getArticlesCollection();
+
+    if (articleId) {
       // Update existing article
-      const articleRef = doc(db, 'articles', id);
-      await updateDoc(articleRef, articleData);
+      await collection.updateOne(
+        { _id: new ObjectId(articleId) },
+        { $set: articleData }
+      );
     } else {
       // Create new article
-      await addDoc(collection(db, 'articles'), {
+      await collection.insertOne({
           ...articleData,
-          createdAt: serverTimestamp() as Timestamp,
+          createdAt: new Date(),
       });
     }
 
@@ -71,11 +81,11 @@ export async function saveArticle(
     revalidatePath('/');
     revalidatePath('/admin/articles');
     revalidatePath(`/category/${articleData.category.toLowerCase()}`);
-    if (id) {
+    if (articleId) {
       revalidatePath(`/article/${articleSlug}`);
     }
 
-    return { message: `Article ${id ? 'updated' : 'published'} successfully.`, success: true };
+    return { message: `Article ${articleId ? 'updated' : 'published'} successfully.`, success: true };
 
   } catch (error) {
     console.error("Failed to save article:", error);
@@ -83,11 +93,14 @@ export async function saveArticle(
   }
 }
 
-
 // Function to delete an article
 export async function deleteArticle(id: string) {
+    if (!ObjectId.isValid(id)) {
+      throw new Error("Invalid article ID.");
+    }
     try {
-        await deleteDoc(doc(db, 'articles', id));
+        const { collection } = await getArticlesCollection();
+        await collection.deleteOne({ _id: new ObjectId(id) });
         revalidatePath('/admin/articles');
         revalidatePath('/');
     } catch (error) {

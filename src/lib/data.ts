@@ -1,5 +1,5 @@
-import { db } from './firebase';
-import { collection, getDocs, doc, getDoc, query, where, limit, orderBy, Timestamp } from 'firebase/firestore';
+import { Collection, Db, FindOptions, MongoClient, ObjectId, Sort } from 'mongodb';
+import { getClient } from './mongodb';
 import { slugify } from './utils';
 
 export type ArticleCategory = 'Politics' | 'Business' | 'Sports' | 'Tech' | 'Culture' | 'Entertainment' | 'World' | 'Africa' | 'Health' | 'Lifestyle' | 'Opinion' | 'Education';
@@ -7,7 +7,7 @@ export type ArticleCategory = 'Politics' | 'Business' | 'Sports' | 'Tech' | 'Cul
 export const allCategories: ArticleCategory[] = ['Politics', 'Business', 'Sports', 'Tech', 'Culture', 'Entertainment', 'World', 'Africa', 'Health', 'Lifestyle', 'Opinion', 'Education'];
 
 export type Article = {
-  id: string; // Firestore document ID
+  id: string;
   title: string;
   category: ArticleCategory;
   summary: string;
@@ -16,49 +16,64 @@ export type Article = {
   featured?: boolean;
   trending?: boolean;
   breaking?: boolean;
-  createdAt: Timestamp;
+  createdAt: Date;
 };
 
-const articlesCollection = collection(db, 'articles');
+// This type is what's stored in MongoDB
+type ArticleDocument = Omit<Article, 'id'> & {
+  _id: ObjectId;
+};
 
-// Helper to convert a Firestore doc to an Article object
-const fromFirestore = (docSnapshot: any): Article => {
-  const data = docSnapshot.data();
+
+// Helper to connect to the database and get the articles collection
+async function getArticlesCollection(): Promise<{ client: MongoClient, collection: Collection<ArticleDocument> }> {
+  const client = await getClient();
+  const db: Db = client.db();
+  const collection = db.collection<ArticleDocument>('articles');
+  return { client, collection };
+}
+
+// Helper to convert a MongoDB document to an Article object
+const fromMongo = (doc: ArticleDocument): Article => {
+  const { _id, ...rest } = doc;
   return {
-    id: docSnapshot.id,
-    title: data.title,
-    category: data.category,
-    summary: data.summary,
-    imageUrl: data.imageUrl,
-    imageHint: data.imageHint,
-    featured: data.featured || false,
-    trending: data.trending || false,
-    breaking: data.breaking || false,
-    createdAt: data.createdAt,
+    id: _id.toHexString(),
+    ...rest,
+    createdAt: rest.createdAt,
   };
 };
 
 export async function getArticles(count?: number): Promise<Article[]> {
-  const q = count ? query(articlesCollection, orderBy('createdAt', 'desc'), limit(count)) : query(articlesCollection, orderBy('createdAt', 'desc'));
-  const snapshot = await getDocs(q);
-  return snapshot.docs.map(fromFirestore);
+  const { collection } = await getArticlesCollection();
+  const options: FindOptions<ArticleDocument> = {
+    sort: { createdAt: -1 as Sort['createdAt'] },
+    limit: count,
+  };
+  const articles = await collection.find({}, options).toArray();
+  return articles.map(fromMongo);
 }
 
 export async function getArticle(id: string): Promise<Article | null> {
-  const docRef = doc(db, 'articles', id);
-  const docSnap = await getDoc(docRef);
-  if (docSnap.exists()) {
-    return fromFirestore(docSnap);
+  if (!ObjectId.isValid(id)) {
+    return null;
+  }
+  const { collection } = await getArticlesCollection();
+  const doc = await collection.findOne({ _id: new ObjectId(id) });
+  if (doc) {
+    return fromMongo(doc);
   }
   return null;
 }
 
 export async function getArticlesByCategory(category: string): Promise<Article[]> {
     const normalizedCategory = category.charAt(0).toUpperCase() + category.slice(1);
-    const q = query(articlesCollection, where('category', '==', normalizedCategory), orderBy('createdAt', 'desc'));
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map(fromFirestore);
+    const { collection } = await getArticlesCollection();
+    const q = { category: normalizedCategory as ArticleCategory };
+    const options: FindOptions<ArticleDocument> = { sort: { createdAt: -1 as Sort['createdAt'] } };
+    const articles = await collection.find(q, options).toArray();
+    return articles.map(fromMongo);
 }
+
 
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
     const allArticles = await getArticles();
@@ -69,19 +84,34 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
 
 
 export async function getFeaturedArticles(): Promise<Article[]> {
-  const q = query(articlesCollection, where('featured', '==', true), orderBy('createdAt', 'desc'), limit(5));
-  const snapshot = await getDocs(q);
-  return snapshot.docs.map(fromFirestore);
+  const { collection } = await getArticlesCollection();
+  const q = { featured: true };
+  const options: FindOptions<ArticleDocument> = {
+    sort: { createdAt: -1 as Sort['createdAt'] },
+    limit: 5
+  };
+  const articles = await collection.find(q, options).toArray();
+  return articles.map(fromMongo);
 }
 
 export async function getTrendingArticles(): Promise<Article[]> {
-  const q = query(articlesCollection, where('trending', '==', true), orderBy('createdAt', 'desc'), limit(5));
-  const snapshot = await getDocs(q);
-  return snapshot.docs.map(fromFirestore);
+  const { collection } = await getArticlesCollection();
+  const q = { trending: true };
+  const options: FindOptions<ArticleDocument> = {
+    sort: { createdAt: -1 as Sort['createdAt'] },
+    limit: 5
+  };
+  const articles = await collection.find(q, options).toArray();
+  return articles.map(fromMongo);
 }
 
 export async function getBreakingNews(): Promise<Article[]> {
-  const q = query(articlesCollection, where('breaking', '==', true), orderBy('createdAt', 'desc'), limit(5));
-  const snapshot = await getDocs(q);
-  return snapshot.docs.map(fromFirestore);
+ const { collection } = await getArticlesCollection();
+  const q = { breaking: true };
+  const options: FindOptions<ArticleDocument> = {
+    sort: { createdAt: -1 as Sort['createdAt'] },
+    limit: 5
+  };
+  const articles = await collection.find(q, options).toArray();
+  return articles.map(fromMongo);
 }
