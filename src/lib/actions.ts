@@ -3,8 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { slugify } from './utils';
-import { query } from './mysql';
-
+import { getArticles } from './data';
 
 const articleSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -49,49 +48,27 @@ export async function saveArticle(
     };
   }
   
-  const { title, category, summary, imageUrl, imageHint, featured, trending, breaking } = validatedFields.data;
+  // This is where you would interact with your database.
+  // Since we're using mock data, we'll just log it.
+  console.log('Saving article:', { id: articleId, ...validatedFields.data });
 
-  try {
-    if (articleId) {
-      const sql = `
-        UPDATE articles
-        SET title = ?, category = ?, summary = ?, imageUrl = ?, imageHint = ?, 
-            featured = ?, trending = ?, breaking = ?
-        WHERE id = ?
-      `;
-      await query(sql, [title, category, summary, imageUrl, imageHint, featured, trending, breaking, articleId]);
-    } else {
-       const sql = `
-        INSERT INTO articles (title, category, summary, imageUrl, imageHint, featured, trending, breaking, createdAt)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())
-      `;
-      await query(sql, [title, category, summary, imageUrl, imageHint, featured, trending, breaking]);
-    }
 
-    revalidatePath('/');
-    revalidatePath('/admin/articles');
-    revalidatePath(`/category/${validatedFields.data.category.toLowerCase()}`);
-    if (articleId) {
-      const articleSlug = slugify(validatedFields.data.title);
-      revalidatePath(`/article/${articleSlug}`);
-    }
-
-    return { message: `Article ${articleId ? 'updated' : 'published'} successfully.`, success: true };
-
-  } catch (error) {
-    console.error("Failed to save article:", error);
-    return { message: 'Failed to save the article. Please try again.', success: false };
+  revalidatePath('/');
+  revalidatePath('/admin/articles');
+  revalidatePath(`/category/${validatedFields.data.category.toLowerCase()}`);
+  if (articleId) {
+    const articleSlug = slugify(validatedFields.data.title);
+    revalidatePath(`/article/${articleSlug}`);
   }
+
+  return { message: `Article ${articleId ? 'updated' : 'published'} successfully.`, success: true };
 }
 
 
 export async function deleteArticle(id: string) {
-    try {
-        await query('DELETE FROM articles WHERE id = ?', [id]);
-        revalidatePath('/admin/articles');
-        revalidatePath('/');
-    } catch (error) {
-        console.error("Error deleting article: ", error);
-        throw new Error("Could not delete article.");
-    }
+    // This is where you would interact with your database.
+    // Since we're using mock data, we'll just log it.
+    console.log('Deleting article with ID:', id);
+    revalidatePath('/admin/articles');
+    revalidatePath('/');
 }

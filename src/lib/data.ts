@@ -1,5 +1,4 @@
 import { slugify } from './utils';
-import { query } from './mysql';
 
 export type ArticleCategory = 'Politics' | 'Business' | 'Sports' | 'Tech' | 'Culture' | 'Entertainment' | 'World' | 'Africa' | 'Health' | 'Lifestyle' | 'Opinion' | 'Education';
 
@@ -18,97 +17,44 @@ export interface Article {
   createdAt: Date;
 };
 
-function mapRowToArticle(row: any): Article {
-    return {
-        id: String(row.id),
-        title: row.title,
-        category: row.category,
-        summary: row.summary,
-        imageUrl: row.imageUrl,
-        imageHint: row.imageHint,
-        featured: Boolean(row.featured),
-        trending: Boolean(row.trending),
-        breaking: Boolean(row.breaking),
-        createdAt: new Date(row.createdAt),
-    };
-}
-
+const mockArticles: Article[] = [
+    { id: '1', title: 'Tanzania Shocks Somalia in CECAFA Opener', category: 'Sports', summary: 'Taifa Stars kick off their CECAFA campaign with a decisive 2-0 victory over Somalia.', imageUrl: 'https://placehold.co/600x400.png', imageHint: 'soccer match', featured: true, trending: true, breaking: true, createdAt: new Date('2023-11-25T10:00:00Z') },
+    { id: '2', title: 'Kenyan Shilling Gains Against the Dollar', category: 'Business', summary: 'The Kenyan shilling has seen a steady rise against the US dollar for the third consecutive week.', imageUrl: 'https://placehold.co/600x400.png', imageHint: 'money currency', featured: true, trending: true, createdAt: new Date('2023-11-24T15:30:00Z') },
+    { id: '3', title: 'New Tech Hub Launched in Nairobi', category: 'Tech', summary: 'A new innovation hub aimed at fostering startups has been launched in the heart of Nairobi.', imageUrl: 'https://placehold.co/600x400.png', imageHint: 'tech startup', featured: true, createdAt: new Date('2023-11-24T11:00:00Z') },
+    { id: '4', title: 'Political Temperatures Rise Ahead of By-Elections', category: 'Politics', summary: 'Major political parties are ramping up their campaigns for the upcoming coastal region by-elections.', imageUrl: 'https://placehold.co/600x400.png', imageHint: 'political debate', trending: true, createdAt: new Date('2023-11-23T18:00:00Z') },
+    { id: '5', title: 'Maasai Mara Voted Africa\'s Leading National Park', category: 'Entertainment', summary: 'The Maasai Mara has once again been recognized as the continent\'s top destination for wildlife.', imageUrl: 'https://placehold.co/600x400.png', imageHint: 'wildlife safari', featured: true, createdAt: new Date('2023-11-22T09:00:00Z') },
+    { id: '6', title: 'Government Announces New Health Initiatives', category: 'Health', summary: 'The Ministry of Health has unveiled a new set of initiatives to improve primary healthcare access.', imageUrl: 'https://placehold.co/600x400.png', imageHint: 'hospital building', createdAt: new Date('2023-11-21T14:00:00Z') },
+    { id: '7', title: 'Global Climate Summit: Africa\'s Stand', category: 'World', summary: 'African leaders present a united front at the global climate summit, demanding more action from developed nations.', imageUrl: 'https://placehold.co/600x400.png', imageHint: 'world leaders', trending: true, createdAt: new Date('2023-11-20T12:00:00Z') },
+];
 
 export async function getArticles(count?: number): Promise<Article[]> {
-  try {
-    const sql = `
-        SELECT * FROM articles 
-        ORDER BY createdAt DESC
-        ${count ? 'LIMIT ?' : ''}
-    `;
-    const params = count ? [count] : [];
-    const rows = await query(sql, params) as any[];
-    return rows.map(mapRowToArticle);
-  } catch (error) {
-    console.error("Error fetching articles:", error);
-    return [];
-  }
+  const sortedArticles = [...mockArticles].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  return count ? sortedArticles.slice(0, count) : sortedArticles;
 }
 
 export async function getArticle(id: string): Promise<Article | null> {
-  try {
-    const rows = await query('SELECT * FROM articles WHERE id = ?', [id]) as any[];
-    if (rows.length === 0) return null;
-    return mapRowToArticle(rows[0]);
-  } catch (error) {
-    console.error(`Error fetching article with id ${id}:`, error);
-    return null;
-  }
+  const article = mockArticles.find((article) => article.id === id) || null;
+  return article;
 }
 
 export async function getArticlesByCategory(category: string): Promise<Article[]> {
-  try {
     const normalizedCategory = category.charAt(0).toUpperCase() + category.slice(1);
-    const rows = await query('SELECT * FROM articles WHERE category = ? ORDER BY createdAt DESC', [normalizedCategory]) as any[];
-    return rows.map(mapRowToArticle);
-  } catch (error) {
-     console.error(`Error fetching articles for category ${category}:`, error);
-     return [];
-  }
+    return mockArticles.filter((article) => article.category.toLowerCase() === normalizedCategory.toLowerCase());
 }
 
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
-    try {
-        const articles = await getArticles();
-        const article = articles.find(a => slugify(a.title) === slug);
-        return article || null;
-    } catch(error) {
-        console.error(`Error fetching article by slug ${slug}:`, error);
-        return null;
-    }
+    const article = mockArticles.find(a => slugify(a.title) === slug);
+    return article || null;
 }
 
 export async function getFeaturedArticles(): Promise<Article[]> {
-  try {
-    const rows = await query('SELECT * FROM articles WHERE featured = 1 ORDER BY createdAt DESC LIMIT 5', []) as any[];
-    return rows.map(mapRowToArticle);
-  } catch(error) {
-    console.error("Error fetching featured articles:", error);
-    return [];
-  }
+  return mockArticles.filter(a => a.featured).slice(0, 5);
 }
 
 export async function getTrendingArticles(): Promise<Article[]> {
-  try {
-    const rows = await query('SELECT * FROM articles WHERE trending = 1 ORDER BY createdAt DESC LIMIT 5', []) as any[];
-    return rows.map(mapRowToArticle);
-  } catch(error) {
-    console.error("Error fetching trending articles:", error);
-    return [];
-  }
+  return mockArticles.filter(a => a.trending).slice(0, 5);
 }
 
 export async function getBreakingNews(): Promise<Article[]> {
-  try {
-    const rows = await query('SELECT * FROM articles WHERE breaking = 1 ORDER BY createdAt DESC LIMIT 5', []) as any[];
-    return rows.map(mapRowToArticle);
-  } catch(error) {
-    console.error("Error fetching breaking news:", error);
-    return [];
-  }
+    return mockArticles.filter(a => a.breaking).slice(0, 5);
 }
