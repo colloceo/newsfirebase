@@ -139,3 +139,75 @@ export async function getBreakingNews(): Promise<Article[]> {
   const articles = mockArticles.filter(a => a.breaking);
   return articles.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()).slice(0, 5);
 }
+
+
+/*
+================================================================================
+MYSQL IMPLEMENTATION GUIDE
+================================================================================
+
+Below is an example of how you could implement the data fetching functions using
+a MySQL database. You would need a library like 'mysql2/promise'.
+
+First, create a connection helper in `src/lib/mysql.ts`:
+
+// src/lib/mysql.ts
+import mysql from 'mysql2/promise';
+
+export async function query(sql: string, params: any[]) {
+  const connection = await mysql.createConnection({
+    host: process.env.MYSQL_HOST,
+    database: process.env.MYSQL_DATABASE,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+  });
+
+  try {
+    const [results] = await connection.execute(sql, params);
+    return results;
+  } finally {
+    await connection.end();
+  }
+}
+
+
+Then, you could rewrite the functions in this file (`src/lib/data.ts`) like this:
+
+// NOTE: Remember to handle data mapping from SQL rows to the Article object.
+// The boolean values for featured, trending, breaking might be stored as 0/1 in SQL.
+
+function mapRowToArticle(row: any): Article {
+    return {
+        ...row,
+        featured: Boolean(row.featured),
+        trending: Boolean(row.trending),
+        breaking: Boolean(row.breaking),
+        createdAt: new Date(row.createdAt),
+    };
+}
+
+
+export async function getArticles(count?: number): Promise<Article[]> {
+    const sql = `
+        SELECT * FROM articles 
+        ORDER BY createdAt DESC
+        ${count ? 'LIMIT ?' : ''}
+    `;
+    const params = count ? [count] : [];
+    const rows = await query(sql, params) as any[];
+    return rows.map(mapRowToArticle);
+}
+
+export async function getArticle(id: string): Promise<Article | null> {
+    const rows = await query('SELECT * FROM articles WHERE id = ?', [id]) as any[];
+    if (rows.length === 0) return null;
+    return mapRowToArticle(rows[0]);
+}
+
+export async function getArticlesByCategory(category: string): Promise<Article[]> {
+    const rows = await query('SELECT * FROM articles WHERE category = ? ORDER BY createdAt DESC', [category]) as any[];
+    return rows.map(mapRowToArticle);
+}
+
+// And so on for the other functions...
+*/

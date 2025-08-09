@@ -96,3 +96,68 @@ export async function deleteArticle(id: string) {
         throw new Error("Could not delete article.");
     }
 }
+
+/*
+================================================================================
+MYSQL IMPLEMENTATION GUIDE
+================================================================================
+
+Below is an example of how you could implement the save and delete actions
+using a MySQL database and the `query` helper from `src/lib/mysql.ts`.
+
+export async function saveArticle(
+  prevState: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const articleId = formData.get('id') as string | null;
+
+  const validatedFields = articleSchema.safeParse({
+    // ... same validation as above
+  });
+
+  if (!validatedFields.success) {
+    // ... same error handling
+  }
+  
+  const { title, category, summary, imageUrl, imageHint, featured, trending, breaking } = validatedFields.data;
+
+  try {
+    if (articleId) {
+      const sql = `
+        UPDATE articles
+        SET title = ?, category = ?, summary = ?, imageUrl = ?, imageHint = ?, 
+            featured = ?, trending = ?, breaking = ?
+        WHERE id = ?
+      `;
+      await query(sql, [title, category, summary, imageUrl, imageHint, featured, trending, breaking, articleId]);
+    } else {
+       const sql = `
+        INSERT INTO articles (title, category, summary, imageUrl, imageHint, featured, trending, breaking, createdAt)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())
+      `;
+      await query(sql, [title, category, summary, imageUrl, imageHint, featured, trending, breaking]);
+    }
+
+    // ... same revalidation logic ...
+
+    return { message: `Article ${articleId ? 'updated' : 'published'} successfully.`, success: true };
+
+  } catch (error) {
+    console.error("Failed to save article:", error);
+    return { message: 'Failed to save the article. Please try again.', success: false };
+  }
+}
+
+
+export async function deleteArticle(id: string) {
+    try {
+        await query('DELETE FROM articles WHERE id = ?', [id]);
+        revalidatePath('/admin/articles');
+        revalidatePath('/');
+    } catch (error) {
+        console.error("Error deleting article: ", error);
+        throw new Error("Could not delete article.");
+    }
+}
+
+*/
