@@ -1,3 +1,4 @@
+
 import { slugify } from './utils';
 
 export type ArticleCategory = 'Politics' | 'Business' | 'Sports' | 'Tech' | 'Culture' | 'Entertainment' | 'World' | 'Africa' | 'Health' | 'Lifestyle' | 'Opinion' | 'Education';
@@ -17,7 +18,8 @@ export interface Article {
   createdAt: Date;
 };
 
-const mockArticles: Article[] = [
+// Static mock data
+let mockArticles: Article[] = [
     {
         id: '1',
         title: 'Taifa Stars Kick Off CECAFA Campaign with a Win',
@@ -28,81 +30,93 @@ const mockArticles: Article[] = [
         featured: true,
         trending: true,
         breaking: true,
-        createdAt: new Date('2024-07-28T10:00:00Z'),
+        createdAt: new Date('2024-07-20T10:00:00Z'),
     },
     {
         id: '2',
         title: 'Kenyan Shilling Gains Against the Dollar',
         category: 'Business',
-        summary: 'The Kenyan Shilling has shown resilience, posting gains against the US Dollar for the third consecutive week.',
+        summary: 'The Kenyan Shilling has seen a significant gain against the US Dollar, trading at its strongest in over a year.',
         imageUrl: 'https://placehold.co/600x400.png',
         imageHint: 'money currency',
         featured: true,
         trending: true,
-        createdAt: new Date('2024-07-28T09:00:00Z'),
+        createdAt: new Date('2024-07-20T09:00:00Z'),
     },
     {
         id: '3',
-        title: 'New Tech Hub Launched in Nairobi to Foster Innovation',
+        title: 'New Tech Hub Launched in Nairobi',
         category: 'Tech',
-        summary: 'A new state-of-the-art technology hub was launched in Nairobi, promising to accelerate startup growth and innovation.',
+        summary: 'A new state-of-the-art technology hub was launched in Nairobi, promising to nurture local innovation and startups.',
         imageUrl: 'https://placehold.co/600x400.png',
         imageHint: 'modern office',
         featured: true,
         trending: true,
-        createdAt: new Date('2024-07-27T15:30:00Z'),
+        breaking: true,
+        createdAt: new Date('2024-07-20T08:00:00Z'),
     },
     {
         id: '4',
-        title: 'Political Temperatures Rise Ahead of By-Elections',
+        title: 'Parliament Debates New Housing Bill',
         category: 'Politics',
-        summary: 'Major political parties are ramping up their campaigns for the upcoming by-elections in several constituencies.',
+        summary: 'Members of Parliament are currently in a heated debate over the proposed new housing bill aimed at providing affordable housing.',
         imageUrl: 'https://placehold.co/600x400.png',
-        imageHint: 'political debate',
+        imageHint: 'government building',
         featured: true,
-        trending: false,
-        createdAt: new Date('2024-07-27T11:00:00Z'),
+        trending: true,
+        createdAt: new Date('2024-07-19T15:00:00Z'),
     },
     {
         id: '5',
-        title: 'Annual Music Festival "Sauti za Busara" Dates Announced',
-        category: 'Entertainment',
-        summary: 'The dates for the much-anticipated annual music festival, Sauti za Busara, have been announced by the organizers.',
+        title: 'Annual Cultural Festival Attracts Thousands',
+        category: 'Culture',
+        summary: 'The annual cultural festival held in Mombasa attracted thousands of tourists and locals, showcasing diverse traditions.',
         imageUrl: 'https://placehold.co/600x400.png',
-        imageHint: 'music festival',
-        featured: true,
+        imageHint: 'cultural festival',
         trending: true,
-        createdAt: new Date('2024-07-26T18:00:00Z'),
+        createdAt: new Date('2024-07-19T11:00:00Z'),
     },
-    {
+     {
         id: '6',
-        title: 'Healthcare Reforms: What You Need to Know',
-        category: 'Health',
-        summary: 'The Ministry of Health has outlined a new set of reforms aimed at improving access to quality healthcare for all Kenyans.',
+        title: 'Gor Mahia Clinches Premier League Title',
+        category: 'Sports',
+        summary: 'Gor Mahia has been crowned the champions of the Kenyan Premier League for the 21st time after a thrilling final match.',
         imageUrl: 'https://placehold.co/600x400.png',
-        imageHint: 'hospital doctor',
-        trending: false,
-        createdAt: new Date('2024-07-26T12:00:00Z'),
+        imageHint: 'sports trophy',
+        featured: true,
+        breaking: true,
+        createdAt: new Date('2024-07-20T18:00:00Z'),
     },
     {
         id: '7',
-        title: 'World Bank Approves New Funding for Infrastructure Projects',
-        category: 'World',
-        summary: 'The World Bank has approved a new funding package to support key infrastructure projects across East Africa.',
+        title: 'Safaricom Announces Yearly Profits',
+        category: 'Business',
+        summary: 'Telecom giant Safaricom has announced its annual financial results, posting a significant profit despite economic challenges.',
         imageUrl: 'https://placehold.co/600x400.png',
-        imageHint: 'construction site',
-        createdAt: new Date('2024-07-25T14:00:00Z'),
+        imageHint: 'corporate building',
+        createdAt: new Date('2024-07-20T16:00:00Z'),
     },
      {
         id: '8',
-        title: 'The Rise of E-commerce in Kenya',
-        category: 'Business',
-        summary: 'A deep dive into how e-commerce is transforming the retail landscape in Kenya and what it means for consumers and businesses.',
+        title: 'Afrobeats Star to Tour Kenya',
+        category: 'Entertainment',
+        summary: 'Popular Afrobeats artist is set to perform in Nairobi and Mombasa as part of their world tour.',
         imageUrl: 'https://placehold.co/600x400.png',
-        imageHint: 'online shopping',
-        createdAt: new Date('2024-07-25T10:00:00Z'),
-    }
+        imageHint: 'music concert',
+        trending: true,
+        createdAt: new Date('2024-07-18T19:00:00Z'),
+    },
 ];
+
+
+export function getMockArticles() {
+  return mockArticles;
+}
+
+export function setMockArticles(articles: Article[]) {
+  mockArticles = articles;
+}
+
 
 // Helper function to map database rows to Article objects
 function toArticle(row: any): Article {
@@ -120,35 +134,34 @@ function toArticle(row: any): Article {
   };
 }
 
-
 export async function getArticles(count?: number): Promise<Article[]> {
-    const sortedArticles = mockArticles.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-    return count ? sortedArticles.slice(0, count) : sortedArticles;
+  const sortedArticles = [...mockArticles].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  return count ? sortedArticles.slice(0, count) : sortedArticles;
 }
 
 export async function getArticle(id: string): Promise<Article | null> {
-    const article = mockArticles.find(a => a.id === id);
-    return article || null;
+  const article = mockArticles.find(a => a.id === id);
+  return article || null;
 }
 
 export async function getArticlesByCategory(category: string): Promise<Article[]> {
-    const normalizedCategory = category.charAt(0).toUpperCase() + category.slice(1);
-    return mockArticles.filter(a => a.category === normalizedCategory);
+  const normalizedCategory = category.charAt(0).toUpperCase() + category.slice(1);
+  return mockArticles.filter(a => a.category === normalizedCategory);
 }
 
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
-    const article = mockArticles.find(a => slugify(a.title) === slug);
-    return article || null;
+  const article = mockArticles.find(a => slugify(a.title) === slug);
+  return article || null;
 }
 
 export async function getFeaturedArticles(): Promise<Article[]> {
-  return mockArticles.filter(a => a.featured).slice(0, 5);
+  return mockArticles.filter(a => a.featured).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()).slice(0, 5);
 }
 
 export async function getTrendingArticles(): Promise<Article[]> {
-  return mockArticles.filter(a => a.trending).slice(0, 5);
+    return mockArticles.filter(a => a.trending).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()).slice(0, 5);
 }
 
 export async function getBreakingNews(): Promise<Article[]> {
-    return mockArticles.filter(a => a.breaking).slice(0, 5);
+    return mockArticles.filter(a => a.breaking).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()).slice(0, 5);
 }

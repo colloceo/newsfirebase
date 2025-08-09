@@ -1,9 +1,10 @@
+
 'use server';
 
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { slugify } from './utils';
-// import { query } from './mysql';
+import { getMockArticles, setMockArticles, Article } from './data';
 
 const articleSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -27,10 +28,6 @@ export async function saveArticle(
   prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
-  // NOTE: This is a mock implementation.
-  // In a real application, you would save the data to a database.
-  console.log('Saving article (mock)...');
-
   const validatedFields = articleSchema.safeParse({
     title: formData.get('title'),
     category: formData.get('category'),
@@ -51,8 +48,34 @@ export async function saveArticle(
   }
   
   const articleId = formData.get('id') as string | null;
+  const { title, category, summary, imageUrl, imageHint, featured, trending, breaking } = validatedFields.data;
+  
+  let articles = getMockArticles();
 
-  console.log('Article data:', { id: articleId, ...validatedFields.data });
+  if (articleId) {
+    // Update existing article
+    const articleIndex = articles.findIndex(a => a.id === articleId);
+    if (articleIndex > -1) {
+      articles[articleIndex] = { ...articles[articleIndex], title, category, summary, imageUrl, imageHint, featured, trending, breaking };
+    }
+  } else {
+    // Create new article
+    const newArticle: Article = {
+      id: (articles.length + 1).toString(),
+      title,
+      category: category as any,
+      summary,
+      imageUrl,
+      imageHint,
+      featured,
+      trending,
+      breaking,
+      createdAt: new Date(),
+    };
+    articles.push(newArticle);
+  }
+
+  setMockArticles(articles);
 
   revalidatePath('/');
   revalidatePath('/admin/articles');
@@ -62,13 +85,15 @@ export async function saveArticle(
     revalidatePath(`/article/${articleSlug}`);
   }
 
-  return { message: `Article ${articleId ? 'updated' : 'published'} successfully (mock).`, success: true };
+  return { message: `Article ${articleId ? 'updated' : 'published'} successfully.`, success: true };
 }
 
 
 export async function deleteArticle(id: string) {
-    // NOTE: This is a mock implementation.
-    console.log(`Deleting article with id: ${id} (mock)`);
+    let articles = getMockArticles();
+    const updatedArticles = articles.filter(a => a.id !== id);
+    setMockArticles(updatedArticles);
+    
     revalidatePath('/admin/articles');
     revalidatePath('/');
 }
