@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { slugify } from './utils';
-import { getArticles } from './data';
+// import { query } from './mysql';
 
 const articleSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -27,7 +27,9 @@ export async function saveArticle(
   prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
-  const articleId = formData.get('id') as string | null;
+  // NOTE: This is a mock implementation.
+  // In a real application, you would save the data to a database.
+  console.log('Saving article (mock)...');
 
   const validatedFields = articleSchema.safeParse({
     title: formData.get('title'),
@@ -48,10 +50,9 @@ export async function saveArticle(
     };
   }
   
-  // This is where you would interact with your database.
-  // Since we're using mock data, we'll just log it.
-  console.log('Saving article:', { id: articleId, ...validatedFields.data });
+  const articleId = formData.get('id') as string | null;
 
+  console.log('Article data:', { id: articleId, ...validatedFields.data });
 
   revalidatePath('/');
   revalidatePath('/admin/articles');
@@ -61,14 +62,13 @@ export async function saveArticle(
     revalidatePath(`/article/${articleSlug}`);
   }
 
-  return { message: `Article ${articleId ? 'updated' : 'published'} successfully.`, success: true };
+  return { message: `Article ${articleId ? 'updated' : 'published'} successfully (mock).`, success: true };
 }
 
 
 export async function deleteArticle(id: string) {
-    // This is where you would interact with your database.
-    // Since we're using mock data, we'll just log it.
-    console.log('Deleting article with ID:', id);
+    // NOTE: This is a mock implementation.
+    console.log(`Deleting article with id: ${id} (mock)`);
     revalidatePath('/admin/articles');
     revalidatePath('/');
 }
