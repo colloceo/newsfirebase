@@ -1,7 +1,29 @@
 # Settings to manage and configure a Firebase App Hosting backend.
 # https://firebase.google.com/docs/app-hosting/configure
-
 runConfig:
-  # Increase this value if you'd like to automatically spin up
-  # more instances in response to increased traffic.
-  maxInstances: 1
+  # Increase this value to automatically spin up more instances in response to
+  # increased traffic. You will be charged for each active instance.
+  maxInstances: 2
+# The server-side code for your app.
+# By default, App Hosting runs `npm run build` and `npm run start`.
+# All files in this directory are uploaded to the backend.
+# You should block unnecessary files with .apphostingignore.
+codebase:
+  # A list of files and directories to ignore. This can save time and money
+  # on deployments.
+  # See the documentation for the full syntax:
+  # https://firebase.google.com/docs/app-hosting/configure#ignore-files
+  ignore:
+    - .git
+    - .github
+    - .vscode
+    - firebase.json
+    - README.md
+# Automatically deploy your app to a preview channel when a PR is merged to
+# this branch.
+deploymentBranch:
+  branch: main
+# Automatically deploy your app to the live channel when a PR is merged to
+# this branch.
+liveBranch:
+  branch: main
