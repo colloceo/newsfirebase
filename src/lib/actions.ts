@@ -4,7 +4,9 @@
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { slugify } from './utils';
-import { getMockArticles, setMockArticles, Article } from './data';
+import { db } from './firebase';
+import { collection, addDoc, updateDoc, deleteDoc, doc, Timestamp } from 'firebase/firestore';
+
 
 const articleSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -50,32 +52,27 @@ export async function saveArticle(
   const articleId = formData.get('id') as string | null;
   const { title, category, summary, imageUrl, imageHint, featured, trending, breaking } = validatedFields.data;
   
-  let articles = getMockArticles();
-
-  if (articleId) {
-    // Update existing article
-    const articleIndex = articles.findIndex(a => a.id === articleId);
-    if (articleIndex > -1) {
-      articles[articleIndex] = { ...articles[articleIndex], title, category, summary, imageUrl, imageHint, featured, trending, breaking };
+  try {
+    if (articleId) {
+      // Update existing article
+      const articleRef = doc(db, 'articles', articleId);
+      await updateDoc(articleRef, {
+        ...validatedFields.data
+      });
+    } else {
+      // Create new article
+      await addDoc(collection(db, 'articles'), {
+        ...validatedFields.data,
+        createdAt: Timestamp.now(),
+      });
     }
-  } else {
-    // Create new article
-    const newArticle: Article = {
-      id: (articles.length + 1).toString(),
-      title,
-      category: category as any,
-      summary,
-      imageUrl,
-      imageHint,
-      featured,
-      trending,
-      breaking,
-      createdAt: new Date(),
+  } catch (error) {
+    console.error("Firestore operation failed", error);
+    return {
+      message: 'An error occurred while saving the article.',
+      success: false,
     };
-    articles.push(newArticle);
   }
-
-  setMockArticles(articles);
 
   revalidatePath('/');
   revalidatePath('/admin/articles');
@@ -90,10 +87,13 @@ export async function saveArticle(
 
 
 export async function deleteArticle(id: string) {
-    let articles = getMockArticles();
-    const updatedArticles = articles.filter(a => a.id !== id);
-    setMockArticles(updatedArticles);
+  try {
+    await deleteDoc(doc(db, 'articles', id));
+  } catch (error) {
+    console.error("Firestore deletion failed", error);
+    // Optionally return an error state
+  }
     
-    revalidatePath('/admin/articles');
-    revalidatePath('/');
+  revalidatePath('/admin/articles');
+  revalidatePath('/');
 }
