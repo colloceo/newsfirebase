@@ -12,7 +12,7 @@ const articleSchema = z.object({
   title: z.string().min(1, "Title is required"),
   category: z.string().min(1, "Category is required"),
   summary: z.string().min(1, "Summary is required"),
-  imageUrl: z.string().url("Invalid URL format"),
+  imageUrl: z.string().url("Invalid URL format").min(1, "Image is required"),
   imageHint: z.string().min(1, "Image hint is required"),
   featured: z.boolean(),
   trending: z.boolean(),
@@ -30,6 +30,7 @@ export async function saveArticle(
   prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
+
   const validatedFields = articleSchema.safeParse({
     title: formData.get('title'),
     category: formData.get('category'),
@@ -42,6 +43,7 @@ export async function saveArticle(
   });
 
   if (!validatedFields.success) {
+    console.log(validatedFields.error.flatten().fieldErrors);
     return {
       message: 'Validation failed.',
       errors: validatedFields.error.flatten().fieldErrors,
