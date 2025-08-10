@@ -4,8 +4,7 @@
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { slugify } from './utils';
-import { db } from './firebase';
-import { collection, addDoc, updateDoc, deleteDoc, doc, Timestamp } from 'firebase/firestore';
+import { addArticle, updateArticle, removeArticle } from './data';
 
 
 const articleSchema = z.object({
@@ -52,24 +51,15 @@ export async function saveArticle(
   }
   
   const articleId = formData.get('id') as string | null;
-  const { title, category, summary, imageUrl, imageHint, featured, trending, breaking } = validatedFields.data;
   
   try {
     if (articleId) {
-      // Update existing article
-      const articleRef = doc(db, 'articles', articleId);
-      await updateDoc(articleRef, {
-        ...validatedFields.data
-      });
+      updateArticle(articleId, validatedFields.data);
     } else {
-      // Create new article
-      await addDoc(collection(db, 'articles'), {
-        ...validatedFields.data,
-        createdAt: Timestamp.now(),
-      });
+      addArticle(validatedFields.data);
     }
   } catch (error) {
-    console.error("Firestore operation failed", error);
+    console.error("Operation failed", error);
     return {
       message: 'An error occurred while saving the article.',
       success: false,
@@ -90,9 +80,9 @@ export async function saveArticle(
 
 export async function deleteArticle(id: string) {
   try {
-    await deleteDoc(doc(db, 'articles', id));
+    removeArticle(id);
   } catch (error) {
-    console.error("Firestore deletion failed", error);
+    console.error("Deletion failed", error);
     // Optionally return an error state
   }
     
