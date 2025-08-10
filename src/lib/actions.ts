@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { slugify } from './utils';
 import { addArticle, updateArticle, removeArticle } from './data';
+import { Timestamp } from 'firebase/firestore';
 
 
 const articleSchema = z.object({
@@ -54,9 +55,11 @@ export async function saveArticle(
   
   try {
     if (articleId) {
-      updateArticle(articleId, validatedFields.data);
+      // When updating, we don't change the createdAt field.
+      await updateArticle(articleId, validatedFields.data);
     } else {
-      addArticle(validatedFields.data);
+      // The addArticle function in data.ts will handle createdAt.
+      await addArticle(validatedFields.data);
     }
   } catch (error) {
     console.error("Operation failed", error);
@@ -80,7 +83,7 @@ export async function saveArticle(
 
 export async function deleteArticle(id: string) {
   try {
-    removeArticle(id);
+    await removeArticle(id);
   } catch (error) {
     console.error("Deletion failed", error);
     // Optionally return an error state
