@@ -23,8 +23,4 @@ Based on the blueprint outlined in `/docs/blueprint.md`, News254 includes the fo
 *   **AI:** Google AI (for tag suggestion)
 *   **Deployment:** Firebase App Hosting
 
-## Setup Instructions
-
-1.  **Clone the repository:**
-
 
