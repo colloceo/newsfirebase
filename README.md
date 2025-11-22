@@ -1,4 +1,4 @@
-# News254..
+# News254...
 
 ## Project Description
 
